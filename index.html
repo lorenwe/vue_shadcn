@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vue_shadcn</title>
+    <script>
+      // 仅针对 Edge 浏览器进行补丁处理，避免影响其他浏览器
+      if (/Edg\//.test(navigator.userAgent)) {
+        const originalReplaceState = window.history.replaceState
+        window.history.replaceState = function (...args) {
+          // 当页面不可见（最小化、切换标签页）时，阻止 replaceState 触发 Edge 的焦点恢复 Bug
+          if (document.visibilityState === 'hidden') {
+            return
+          }
+          return originalReplaceState.apply(this, args)
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
