@@ -28,10 +28,12 @@ const teams: Team[] = [
   },
 ]
 
-const { navData } = useSidebar()
+const { navData, menuData } = useSidebar()
+
 
 export const sidebarData: SidebarData = {
   user,
   teams,
   navMain: navData.value!,
+  menuData: menuData.value!,
 }

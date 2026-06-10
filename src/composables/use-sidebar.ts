@@ -1,6 +1,6 @@
 import { BadgeHelpIcon, BellDotIcon, BirdIcon, BoxesIcon, BugIcon, ComponentIcon, CreditCardIcon, LayoutDashboardIcon, ListTodoIcon, PaletteIcon, PictureInPicture2Icon, PodcastIcon, SettingsIcon, SquareUserRoundIcon, UserIcon, UsersIcon, WrenchIcon } from '@lucide/vue'
 
-import type { NavGroup } from '@/components/app-sidebar/types'
+import type { NavGroup, MenuItem } from '@/components/app-sidebar/types'
 
 export function useSidebar() {
   const settingsNavItems = [
@@ -34,6 +34,17 @@ export function useSidebar() {
             { title: 'Sign Up', url: '/auth/sign-up' },
             { title: 'Forgot Password', url: '/auth/forgot-password' },
             { title: 'OTP', url: '/auth/otp' },
+            {
+              title: 'Auth',
+              icon: SquareUserRoundIcon,
+              items: [
+                { title: 'Sign In', url: '/auth/sign-in' },
+                { title: 'Sign In(2 Col)', url: '/auth/sign-in-2' },
+                { title: 'Sign Up', url: '/auth/sign-up' },
+                { title: 'Forgot Password', url: '/auth/forgot-password' },
+                { title: 'OTP', url: '/auth/otp' },
+              ],
+            },
           ],
         },
         {
@@ -69,9 +80,62 @@ export function useSidebar() {
     },
   ])
 
+  const menuData = ref<MenuItem[]>([
+    {
+      title: 'Pages',
+      items: [
+        {
+          title: 'Auth',
+          icon: SquareUserRoundIcon,
+          items: [
+            { title: 'Sign In', url: '/auth/sign-in' },
+            { title: 'Sign In(2 Col)', url: '/auth/sign-in-2' },
+            { title: 'Sign Up', url: '/auth/sign-up' },
+            { title: 'Forgot Password', url: '/auth/forgot-password' },
+            { title: 'OTP', url: '/auth/otp' },
+            {
+              title: 'Auth',
+              icon: SquareUserRoundIcon,
+              items: [
+                { title: 'Sign In', url: '/auth/sign-in' },
+                { title: 'Sign In(2 Col)', url: '/auth/sign-in-2' },
+                { title: 'Sign Up', url: '/auth/sign-up' },
+                { title: 'Forgot Password', url: '/auth/forgot-password' },
+                { title: 'OTP', url: '/auth/otp' },
+                {
+                  title: 'Auth',
+                  icon: SquareUserRoundIcon,
+                  items: [
+                    { title: 'Sign In', url: '/auth/sign-in' },
+                    { title: 'Sign In(2 Col)', url: '/auth/sign-in-2' },
+                    { title: 'Sign Up', url: '/auth/sign-up' },
+                    { title: 'Forgot Password', url: '/auth/forgot-password' },
+                    { title: 'OTP', url: '/auth/otp' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Errors',
+          icon: BugIcon,
+          items: [
+            { title: '401 | Unauthorized', url: '/errors/401' },
+            { title: '403 | Forbidden', url: '/errors/403' },
+            { title: '404 | Not Found', url: '/errors/404' },
+            { title: '500 | Internal Server Error', url: '/errors/500' },
+            { title: '503 | Maintenance Error', url: '/errors/503' },
+          ],
+        },
+      ],
+    },
+  ])
+
   return {
     navData,
     otherPages,
     settingsNavItems,
+    menuData,
   }
 }

@@ -6,7 +6,18 @@ type NavIcon = FunctionalComponent<LucideProps, Record<any, any>, any, Record<an
 interface BaseNavItem {
   title: string
   icon?: NavIcon
+  items?: NavItem[]
 }
+
+// export type NavItem
+//   = | BaseNavItem & {
+//     items: (BaseNavItem & { url?: string })[]
+//     url?: never
+//     isActive?: boolean
+//   } | BaseNavItem & {
+//     url: string
+//     items?: never
+//   }
 
 export type NavItem
   = | BaseNavItem & {
@@ -39,4 +50,12 @@ export interface SidebarData {
   user: User
   teams: Team[]
   navMain: NavGroup[]
+  menuData: MenuItem[]
+}
+
+export interface MenuItem {
+  title: string
+  url?: string
+  icon?: NavIcon
+  items?: MenuItem[]
 }

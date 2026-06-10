@@ -46,8 +46,9 @@ function isActive(menu: NavItem): boolean {
           />
         </UiSidebarMenuItem>
 
-        <UiSidebarMenuItem v-else>
-          <!-- sidebar expanded -->
+        <UiSidebarMenuItem v-else >
+          <!-- 侧边栏已展开 -->
+          <!-- 折叠面板 -->
           <UiCollapsible
             v-if="state !== 'collapsed' || isMobile"
             as-child :default-open="isCollapsed(menu)"
@@ -83,7 +84,7 @@ function isActive(menu: NavItem): boolean {
             </UiCollapsibleContent>
           </UiCollapsible>
 
-          <!-- sidebar collapsed -->
+          <!-- 侧边栏已折叠 -->
           <UiDropdownMenu v-else>
             <UiDropdownMenuTrigger as-child>
               <UiSidebarMenuButton :tooltip="menu.title">
