@@ -23,7 +23,7 @@ const contentLayout = "centered"
             <div class="ml-auto flex items-center space-x-4">
                 <!-- <LanguageChange /> -->
                 <ToggleTheme />
-                <!-- <ThemePopover /> -->
+                <CustomThemeThemePopover />
             </div>
             </header>
 
