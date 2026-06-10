@@ -6,7 +6,12 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const CONTENT_LAYOUTS: typeof import('../constants/themes').CONTENT_LAYOUTS
   const EffectScope: typeof import('vue').EffectScope
+  const RADIUS: typeof import('../constants/themes').RADIUS
+  const THEMES: typeof import('../constants/themes').THEMES
+  const THEME_PRIMARY_COLORS: typeof import('../constants/themes').THEME_PRIMARY_COLORS
+  const colorMode: typeof import('../composables/use-color-mode').colorMode
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const customRef: typeof import('vue').customRef
@@ -24,6 +29,7 @@ declare global {
   const isRef: typeof import('vue').isRef
   const isShallow: typeof import('vue').isShallow
   const markRaw: typeof import('vue').markRaw
+  const mode: typeof import('../composables/use-color-mode').mode
   const nextTick: typeof import('vue').nextTick
   const onActivated: typeof import('vue').onActivated
   const onBeforeMount: typeof import('vue').onBeforeMount
@@ -44,6 +50,7 @@ declare global {
   const readonly: typeof import('vue').readonly
   const ref: typeof import('vue').ref
   const resolveComponent: typeof import('vue').resolveComponent
+  const setColorMode: typeof import('../composables/use-color-mode').setColorMode
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
@@ -62,7 +69,9 @@ declare global {
   const useSidebarConfigStore: typeof import('../stores/sidebar-config').useSidebarConfigStore
   const useSidebarNavigation: typeof import('../composables/use-sidebar-navigation').useSidebarNavigation
   const useSlots: typeof import('vue').useSlots
+  const useSystemTheme: typeof import('../composables/use-system-theme').useSystemTheme
   const useTemplateRef: typeof import('vue').useTemplateRef
+  const useThemeStore: typeof import('../stores/theme').useThemeStore
   const watch: typeof import('vue').watch
   const watchEffect: typeof import('vue').watchEffect
   const watchPostEffect: typeof import('vue').watchPostEffect
@@ -73,6 +82,12 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { ColorMode } from '../composables/use-color-mode'
+  import('../composables/use-color-mode')
+  // @ts-ignore
+  export type { Theme, Radius, ContentLayout } from '../constants/themes'
+  import('../constants/themes')
   // @ts-ignore
   export type { NavigationMode } from '../stores/sidebar-config'
   import('../stores/sidebar-config')

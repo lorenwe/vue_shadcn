@@ -26,6 +26,7 @@ declare module 'vue' {
     Loading: typeof import('./../components/loading.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ToggleTheme: typeof import('./../components/toggle-theme.vue')['default']
     UiAvatar: typeof import('./../components/ui/avatar/Avatar.vue')['default']
     UiAvatarFallback: typeof import('./../components/ui/avatar/AvatarFallback.vue')['default']
     UiAvatarImage: typeof import('./../components/ui/avatar/AvatarImage.vue')['default']
