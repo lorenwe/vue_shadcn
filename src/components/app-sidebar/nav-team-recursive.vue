@@ -52,7 +52,7 @@ function isCollapsed(menu: MenuItem): boolean {
               </UiCollapsibleTrigger>
           </UiSidebarMenuItem>
           <UiCollapsibleContent>
-              <UiSidebarMenuSub>
+              <UiSidebarMenuSub class="ms-3.5 me-0 ps-2.5 pe-0">
                   <UiSidebarMenuSubItem>
                       <NavTeamRecursive v-for="child in menuItem.items" :key="child.title" :menu-item="child" />
                   </UiSidebarMenuSubItem>
