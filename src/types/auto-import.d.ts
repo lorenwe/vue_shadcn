@@ -6,6 +6,8 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const API_BASE_URL: typeof import('../constants/app-config').API_BASE_URL
+  const API_TIMEOUT: typeof import('../constants/app-config').API_TIMEOUT
   const CONTENT_LAYOUTS: typeof import('../constants/themes').CONTENT_LAYOUTS
   const EffectScope: typeof import('vue').EffectScope
   const RADIUS: typeof import('../constants/themes').RADIUS
@@ -60,6 +62,7 @@ declare global {
   const toValue: typeof import('vue').toValue
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
+  const useApiFetch: typeof import('../composables/use-fetch').useApiFetch
   const useAttrs: typeof import('vue').useAttrs
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
