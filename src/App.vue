@@ -2,6 +2,8 @@
 // import Loading from '@/components/loading.vue'
 import { Toaster } from '@/components/ui/sonner'
 import { useSystemTheme } from '@/composables/use-system-theme'
+import 'vue-sonner/style.css'
+
 
 useSystemTheme()
 </script>

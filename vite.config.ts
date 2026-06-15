@@ -55,4 +55,27 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // 开发环境服务器配置
+  server: {
+    // 是否监听所有地址
+    host: true,
+    // 端口号
+    port: 3333,
+    // 端口被占用时，是否直接退出
+    strictPort: false,
+    // 是否自动打开浏览器
+    open: true,
+    // 反向代理
+    proxy: {
+      "/api": {
+        target: "https://m1.apifoxmock.com/m1/8358408-8123909-default/",
+        // 是否为 WebSocket
+        ws: false,
+        // 是否允许跨域
+        changeOrigin: true
+      }
+    },
+    // 是否允许跨域
+    cors: true,
+  },
 })
