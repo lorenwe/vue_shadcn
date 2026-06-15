@@ -10,12 +10,12 @@ const staticRoutes: RouteRecordRaw[] = [
     name: 'Home',
     component: () => import('@/pages/index.vue')
   },
-//   {
-//     path: '/login',
-//     name: 'Login',
-//     meta: { layout: false }, // 不需要布局
-//     component: () => import('@/pages/login.vue')
-//   },
+  {
+    path: '/login',
+    name: 'Login',
+    meta: { layout: true }, // 不需要布局
+    component: () => import('@/pages/login.vue')
+  },
 //   {
 //     path: '/:pathMatch(.*)*',
 //     name: 'NotFound',
