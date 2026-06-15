@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth'
+import { LoginRequestSchema } from '@/validators/auth.validator'
+import type { ZodError } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -31,41 +33,95 @@ const authStore = useAuthStore()
 const email = ref('123@123.com')
 const password = ref('123')
 const isLoading = ref(false)
-const errors = ref<{ email?: string; password?: string }>({})
 
-function validate(): boolean {
-  errors.value = {}
+// 字段级错误：每个字段可以有多条消息
+const fieldErrors = ref<Record<string, string[]>>({})
+// 通用错误（非字段级，如「服务端错误」）
+const formError = ref('')
 
-  if (!email.value.trim()) {
-    errors.value.email = '请输入邮箱地址'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-    errors.value.email = '请输入有效的邮箱地址'
+/** 触发过提交之后，才开始展示失焦验证错误，避免一进来就是满屏错误 */
+const hasSubmitted = ref(false)
+
+/**
+ * 将 zod 错误写入 fieldErrors（按字段分组）
+ */
+function applyZodErrors(error: ZodError) {
+  const next: Record<string, string[]> = {}
+  for (const issue of error.issues) {
+    const field = typeof issue.path[0] === 'string' ? issue.path[0] : String(issue.path[0])
+    if (!next[field]) next[field] = []
+    next[field].push(issue.message)
   }
-
-  if (!password.value) {
-    errors.value.password = '请输入密码'
-  } else if (password.value.length < 3) {
-    errors.value.password = '密码至少需要 3 个字符'
-  }
-
-  return Object.keys(errors.value).length === 0
+  fieldErrors.value = next
 }
 
+/** 清除单个字段的错误 */
+function clearFieldError(field: string) {
+  if (fieldErrors.value[field]) {
+    const next = { ...fieldErrors.value }
+    delete next[field]
+    fieldErrors.value = next
+  }
+}
+
+/** 校验单个字段（失焦用） */
+function validateField(field: 'email' | 'password') {
+  if (!hasSubmitted.value) return
+
+  const result = LoginRequestSchema.safeParse({
+    email: email.value,
+    password: password.value,
+  })
+
+  if (result.success) {
+    clearFieldError(field)
+    return
+  }
+
+  const fieldMsgs = result.error.issues
+    .filter((i) => i.path[0] === field)
+    .map((i) => i.message)
+  if (fieldMsgs.length > 0) {
+    fieldErrors.value = {
+      ...fieldErrors.value,
+      [field]: fieldMsgs,
+    }
+  } else {
+    clearFieldError(field)
+  }
+}
+
+/** 全量校验 → 提交 */
 async function handleSubmit() {
-  if (!validate()) return
+  hasSubmitted.value = true
+  formError.value = ''
+  fieldErrors.value = {}
+
+  const result = LoginRequestSchema.safeParse({
+    email: email.value,
+    password: password.value,
+  })
+
+  if (!result.success) {
+    applyZodErrors(result.error)
+    // 聚焦第一个错误字段
+    const firstIssue = result.error.issues[0]
+    if (firstIssue) {
+      const el = document.getElementById(firstIssue.path.join('-'))
+      el?.focus()
+    }
+    return
+  }
 
   isLoading.value = true
   try {
-    await authStore.login(email.value, password.value)
-    toast.success('登录成功', {
-      description: '欢迎回来！',
-    })
+    await authStore.login(result.data.email, result.data.password)
+    toast.success('登录成功', { description: '欢迎回来！' })
     await router.push('/')
   } catch (error: any) {
     const message = error?.data?.message || error?.message || '登录失败，请检查邮箱和密码'
-    toast.error('登录失败', {
-      description: message,
-    })
+    formError.value = message
+    toast.error('登录失败', { description: message })
   } finally {
     isLoading.value = false
   }
@@ -82,12 +138,11 @@ async function handleSubmit() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form @submit.prevent="handleSubmit">
+        <form @submit.prevent="handleSubmit" novalidate>
           <FieldGroup>
-            <Field :data-invalid="!!errors.email">
-              <FieldLabel for="email">
-                邮箱
-              </FieldLabel>
+            <!-- 邮箱 -->
+            <Field :data-invalid="hasSubmitted && !!fieldErrors.email?.length">
+              <FieldLabel for="email">邮箱</FieldLabel>
               <Input
                 id="email"
                 v-model="email"
@@ -95,14 +150,16 @@ async function handleSubmit() {
                 placeholder="m@example.com"
                 :disabled="isLoading"
                 required
+                @blur="validateField('email')"
+                @input="clearFieldError('email')"
               />
-              <FieldError v-if="errors.email">{{ errors.email }}</FieldError>
+              <FieldError v-if="fieldErrors.email?.length" :errors="fieldErrors.email" />
             </Field>
-            <Field :data-invalid="!!errors.password">
+
+            <!-- 密码 -->
+            <Field :data-invalid="hasSubmitted && !!fieldErrors.password?.length">
               <div class="flex items-center">
-                <FieldLabel for="password">
-                  密码
-                </FieldLabel>
+                <FieldLabel for="password">密码</FieldLabel>
                 <a
                   href="#"
                   class="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -116,22 +173,31 @@ async function handleSubmit() {
                 type="password"
                 :disabled="isLoading"
                 required
+                @blur="validateField('password')"
+                @input="clearFieldError('password')"
               />
-              <FieldError v-if="errors.password">{{ errors.password }}</FieldError>
+              <FieldError v-if="fieldErrors.password?.length" :errors="fieldErrors.password" />
             </Field>
+
+            <!-- 表单级通用错误 -->
+            <div
+              v-if="formError"
+              class="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            >
+              {{ formError }}
+            </div>
+
             <Field>
-              <Button type="submit" :disabled="isLoading">
+              <Button type="submit" :disabled="isLoading" class="w-full">
                 <UiSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
                 {{ isLoading ? '登录中...' : '登录' }}
               </Button>
-              <Button variant="outline" type="button" :disabled="isLoading">
+              <Button variant="outline" type="button" :disabled="isLoading" class="w-full">
                 使用 Google 登录
               </Button>
               <FieldDescription class="text-center">
                 没有账号？
-                <a href="#">
-                  注册
-                </a>
+                <a href="#">注册</a>
               </FieldDescription>
             </Field>
           </FieldGroup>

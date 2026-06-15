@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { loginApi, logoutApi } from '@/api/auth'
-import type { UserInfo } from '@/api/auth'
+import { loginApi, logoutApi } from '@/api/auth/auth'
+import type { UserInfo } from '@/api/auth/types'
 
 export const useAuthStore = defineStore('user', () => {
   const token = ref('')
