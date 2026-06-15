@@ -6,7 +6,8 @@ import { createPersistedState } from 'pinia-plugin-persistedstate'
 const pinia = createPinia()
 
 const persistedState = createPersistedState({
-  storage: sessionStorage,
+  storage: localStorage,
+  debug: true,
 })
 pinia.use(persistedState)
 

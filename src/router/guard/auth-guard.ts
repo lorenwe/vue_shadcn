@@ -5,17 +5,18 @@ import { storeToRefs } from 'pinia'
 import pinia from '@/plugins/pinia/setup'
 import { useAuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore(pinia)
+
 
 export function setupAuthGuard(router: Router) {
   router.beforeEach((to, from) => {
-    const { isLogin, token } = storeToRefs(authStore)
+    const authStore = useAuthStore(pinia)
+    const { isLogin, token, userInfo } = storeToRefs(authStore)
 
     const authPaths = ['/login']
-    const isAuthPage = authPaths.includes(to.path)
-    const isFromAuthPage = authPaths.includes(from.path)
+    const isAuthPage = authPaths.includes(to.path)  // 判断：**即将要跳转到的页面** 是不是登录页
+    const isFromAuthPage = authPaths.includes(from.path)  // 判断：**当前离开的来源页面** 是不是登录页
 
-    console.log(isLogin.value, token.value, isAuthPage)
+    console.log(isLogin.value, token.value, isAuthPage, userInfo.value)
 
     // 已登录（含 token 校验）：若访问登录页，则重定向至首页或上一页
     if (isLogin.value && token.value && isAuthPage) {

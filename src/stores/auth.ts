@@ -5,7 +5,9 @@ import type { UserInfo } from '@/api/auth'
 export const useAuthStore = defineStore('user', () => {
   const token = ref('')
   const userInfo = ref<UserInfo | null>(null)
-  const isLogin = ref(false)
+  
+  // 计算属性：由 token 自动推导登录态，不单独存
+  const isLogin = computed(() => !!token.value)
 
   /**
    * 用户登录
@@ -14,7 +16,6 @@ export const useAuthStore = defineStore('user', () => {
     const res = await loginApi({ email, password })
     token.value = res.token
     userInfo.value = res.user
-    isLogin.value = true
   }
 
   /**
@@ -28,7 +29,6 @@ export const useAuthStore = defineStore('user', () => {
     } finally {
       token.value = ''
       userInfo.value = null
-      isLogin.value = false
     }
   }
 
@@ -41,6 +41,6 @@ export const useAuthStore = defineStore('user', () => {
   }
 }, {
   persist: {
-    pick: ['token', 'userInfo', 'isLogin'],
+    pick: ['token', 'userInfo'],
   },
 })

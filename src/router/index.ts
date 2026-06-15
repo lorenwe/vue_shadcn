@@ -8,6 +8,7 @@ const staticRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
+    meta: {auth: true},
     component: () => import('@/pages/index.vue')
   },
   {
