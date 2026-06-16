@@ -10,9 +10,7 @@ export async function fetchMenuApi(): Promise<MenuResponse> {
   const { apiFetch } = useApiFetch()
   const res = await apiFetch('/menu/tree', { method: 'POST' })
 
-
   const parsed = ApiResponseSchema(MenuResponseSchema).parse(res)
-  console.log(parsed.code)
   if (parsed.code !== 0) {
     throw new Error(parsed.message || '获取菜单失败')
   }

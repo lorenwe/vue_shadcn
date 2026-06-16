@@ -5,13 +5,8 @@ import { useMenuStore } from '@/stores/menu'
 import { resolveIcon } from '@/utils/resolve-icon'
 import type { MenuItem as ApiMenuItem } from '@/api/menu/types'
 
-import type { MenuItem, NavIcon, SidebarData, Team, User } from '../types'
+import type { MenuItem, NavIcon, Team } from '../types'
 
-export const user: User = {
-  name: 'shadcn',
-  email: 'm@example.com',
-  avatar: '/avatars/shadcn.jpg',
-}
 
 export const teams: Team[] = [
   {
@@ -48,18 +43,3 @@ const menuStore = useMenuStore(pinia)
 
 export const menuData = computed<MenuItem[]>(() => menuStore.menuItems.map(toSidebarMenuItem))
 
-/** 向后兼容的静态包装 */
-export const sidebarData: Omit<SidebarData, 'menuData'> = {
-  user,
-  teams,
-  navMain: [],
-}
-
-// const { navData, menuData } = useSidebar()
-
-// export const sidebarData: SidebarData = {
-//   user,
-//   teams,
-//   navMain: navData.value!,
-//   menuData: menuData.value!,
-// }

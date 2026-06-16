@@ -1,19 +1,29 @@
 <script setup lang="ts">
 import { BadgeCheckIcon, BellIcon, ChevronsUpDownIcon, CreditCardIcon, LogOutIcon, SparklesIcon, UserRoundCogIcon } from '@lucide/vue'
+import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 
 import { useSidebar } from '@/components/ui/sidebar'
+import { useAuthStore } from '@/stores/auth'
 
-import type { User } from './types'
-
-const { user } = defineProps<
-  { user: User }
->()
-
-// const { logout } = useAuth()
-const logout = () => {
-    console.log("退出")
-}
+const router = useRouter()
+const authStore = useAuthStore()
 const { isMobile, open } = useSidebar()
+
+/** 从 auth store 取真实用户信息，缺失字段给兜底值 */
+const displayName = computed(() => authStore.userInfo?.name || '用户')
+const displayEmail = computed(() => authStore.userInfo?.email || '')
+const displayAvatar = computed(() => authStore.userInfo?.avatar || '')
+
+async function logout() {
+  try {
+    await authStore.logout()
+    toast.success('已退出登录')
+    await router.push('/login')
+  } catch {
+    toast.error('退出失败，请重试')
+  }
+}
 </script>
 
 <template>
@@ -26,14 +36,14 @@ const { isMobile, open } = useSidebar()
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <UiAvatar class="size-8 rounded-lg">
-              <UiAvatarImage :src="user.avatar" :alt="user.name" />
+              <UiAvatarImage :src="displayAvatar" :alt="displayName" />
               <UiAvatarFallback class="rounded-lg">
                 CN
               </UiAvatarFallback>
             </UiAvatar>
             <div class="grid flex-1 text-sm leading-tight text-left">
-              <span class="font-semibold truncate">{{ user.name }}</span>
-              <span class="text-xs truncate">{{ user.email }}</span>
+              <span class="font-semibold truncate">{{ displayName }}</span>
+              <span class="text-xs truncate">{{ displayEmail }}</span>
             </div>
             <ChevronsUpDownIcon class="ml-auto size-4" />
           </UiSidebarMenuButton>
@@ -47,21 +57,21 @@ const { isMobile, open } = useSidebar()
           <UiDropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <UiAvatar class="size-8 rounded-lg">
-                <UiAvatarImage :src="user.avatar" :alt="user.name" />
+                <UiAvatarImage :src="displayAvatar" :alt="displayName" />
                 <UiAvatarFallback class="rounded-lg">
                   CN
                 </UiAvatarFallback>
               </UiAvatar>
               <div class="grid flex-1 text-sm leading-tight text-left">
-                <span class="font-semibold truncate">{{ user.name }}</span>
-                <span class="text-xs truncate">{{ user.email }}</span>
+                <span class="font-semibold truncate">{{ displayName }}</span>
+                <span class="text-xs truncate">{{ displayEmail }}</span>
               </div>
             </div>
           </UiDropdownMenuLabel>
 
           <UiDropdownMenuSeparator />
           <UiDropdownMenuGroup>
-            <UiDropdownMenuItem @click="$router.push('/billing/')">
+            <UiDropdownMenuItem @click="router.push('/billing/')">
               <SparklesIcon />
               Upgrade to Pro
             </UiDropdownMenuItem>
@@ -69,7 +79,7 @@ const { isMobile, open } = useSidebar()
 
           <UiDropdownMenuSeparator />
           <UiDropdownMenuGroup>
-            <UiDropdownMenuItem @click="$router.push('/billing?type=billing')">
+            <UiDropdownMenuItem @click="router.push('/billing?type=billing')">
               <CreditCardIcon />
               Billing
             </UiDropdownMenuItem>
@@ -77,15 +87,15 @@ const { isMobile, open } = useSidebar()
 
           <UiDropdownMenuSeparator />
           <UiDropdownMenuGroup>
-            <UiDropdownMenuItem @click="$router.push('/settings/')">
+            <UiDropdownMenuItem @click="router.push('/settings/')">
               <UserRoundCogIcon />
               Profile
             </UiDropdownMenuItem>
-            <UiDropdownMenuItem @click="$router.push('/settings/account')">
+            <UiDropdownMenuItem @click="router.push('/settings/account')">
               <BadgeCheckIcon />
               Account
             </UiDropdownMenuItem>
-            <UiDropdownMenuItem @click="$router.push('/settings/notifications')">
+            <UiDropdownMenuItem @click="router.push('/settings/notifications')">
               <BellIcon />
               Notifications
             </UiDropdownMenuItem>
@@ -94,8 +104,7 @@ const { isMobile, open } = useSidebar()
           <UiDropdownMenuSeparator />
           <UiDropdownMenuItem @click="logout">
             <LogOutIcon />
-            <!-- {{ $t('logout') }} -->
-              退出
+            退出
           </UiDropdownMenuItem>
         </UiDropdownMenuContent>
       </UiDropdownMenu>

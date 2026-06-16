@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { sidebarData, menuData } from './data/sidebar-data'
+
+import { menuData, teams } from './data/sidebar-data.ts';
 import NavFooter from './nav-footer.vue'
 import NavTeam2 from './nav-team2.vue'
 import TeamSwitcher from './team-switcher.vue'
@@ -8,7 +9,7 @@ import TeamSwitcher from './team-switcher.vue'
 <template>
   <UiSidebar collapsible="icon" class="z-50">
     <UiSidebarHeader>
-      <TeamSwitcher :teams="sidebarData.teams" />
+      <TeamSwitcher :teams="teams" />
     </UiSidebarHeader>
 
     <UiSidebarContent>
@@ -16,7 +17,7 @@ import TeamSwitcher from './team-switcher.vue'
     </UiSidebarContent>
 
     <UiSidebarFooter>
-      <NavFooter :user="sidebarData.user" />
+      <NavFooter />
     </UiSidebarFooter>
 
     <UiSidebarRail />

@@ -1,20 +1,12 @@
 <script lang="ts" setup>
-import { sidebarData } from '@/components/app-sidebar/data/sidebar-data.ts'
+import { menuData } from '@/components/app-sidebar/data/sidebar-data.ts'
 import { useRoute } from 'vue-router'
-// import { useSidebar } from '@/components/ui/sidebar'
-import { ChevronRightIcon, ExternalLinkIcon } from '@lucide/vue'
-
 import type { MenuItem } from '@/components/app-sidebar/types'
-import { isExternalUrl } from '@/utils/is-external-url'
-import MenuButton2 from '@/components/app-sidebar/menu-button2.vue'
-import NavTeamRecursive from '@/components/app-sidebar/nav-team-recursive.vue'
+
 import NavDropdownMenu from '@/components/app-sidebar/nav-dropdown-menu.vue'
 
 const route = useRoute()
 const initialPath = route.path
-// const { state, isMobile } = useSidebar()
-
-const { menuData } = sidebarData
 
 function isCollapsed(menu: MenuItem): boolean {
   if (menu.url === initialPath)
