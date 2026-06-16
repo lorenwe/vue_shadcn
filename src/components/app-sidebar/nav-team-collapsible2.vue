@@ -19,13 +19,13 @@ const { state, isMobile } = useSidebar()
       <template v-if="state !== 'collapsed' || isMobile">
         <!-- 侧边栏已展开 -->
         <template v-for="menu in menuItem" :key="menu.title">
-          <NavTeamRecursive v-for="child in menu.items" :key="child.title" :menu-item="child" />
+          <NavTeamRecursive :menu-item="menu" />
         </template>
       </template>
       <template v-else>
         <!-- 侧边栏已折叠 -->
         <template v-for="menu in menuItem" :key="menu.title">
-          <NavDropdownMenu v-for="child in menu.items" :key="child.title" :menu-item="child" />
+          <NavDropdownMenu :menu-item="menu" />
         </template>
       </template>
     </UiSidebarMenu>

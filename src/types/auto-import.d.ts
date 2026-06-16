@@ -68,6 +68,7 @@ declare global {
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
   const useId: typeof import('vue').useId
+  const useMenuStore: typeof import('../stores/menu').useMenuStore
   const useModel: typeof import('vue').useModel
   const useSidebar: typeof import('../composables/use-sidebar').useSidebar
   const useSidebarConfigStore: typeof import('../stores/sidebar-config').useSidebarConfigStore
