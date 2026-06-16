@@ -11,9 +11,9 @@ export function setupAuthGuard(router: Router) {
   router.beforeEach((to, from) => {
     const { isLogin, isAuthPage } = useGuardContext(to, from)
 
-    console.log("setupAuthGuard")
-    console.log(isLogin.value)
-    console.log(isAuthPage)
+    // console.log("setupAuthGuard")
+    // console.log(isLogin.value)
+    // console.log(isAuthPage)
 
     // 未登录 + 不是公共页面 → 立即重定向，不继续匹配
     if (!isLogin.value && !isAuthPage) {

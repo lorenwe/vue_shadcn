@@ -66,12 +66,12 @@ export const useMenuStore = defineStore('menu', () => {
     }
 
     collectRoutes(items)
-    console.log(routeConfigs)
+    // console.log(routeConfigs)
 
     // setupLayouts 包裹布局：name 会落到子路由上，需提到外层才能被 removeRoute 清除
     const wrapped = setupLayouts(routeConfigs)
 
-    console.log(wrapped)
+    // console.log(wrapped)
     for (const route of wrapped) {
       if (route.children?.[0]?.name) {
         // 包裹了 Layouts 路由，name 在子路由上，把 name 提到上级路由去，后续才能正常清除路由
