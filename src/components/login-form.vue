@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth'
@@ -28,6 +29,8 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const route = useRoute()
+const { t } = useI18n()
 const authStore = useAuthStore()
 
 const email = ref('123@123.com')
@@ -116,12 +119,14 @@ async function handleSubmit() {
   isLoading.value = true
   try {
     await authStore.login(result.data.email, result.data.password)
-    toast.success('登录成功', { description: '欢迎回来！' })
-    await router.push('/')
+    toast.success(t('login.success'), { description: t('login.welcome') })
+    // 优先跳转到 redirect 参数指定的页面，其次首页
+    const redirect = (route.query.redirect as string) || '/'
+    await router.push(redirect)
   } catch (error: any) {
-    const message = error?.data?.message || error?.message || '登录失败，请检查邮箱和密码'
+    const message = error?.data?.message || error?.message || t('login.checkCredentials')
     formError.value = message
-    toast.error('登录失败', { description: message })
+    toast.error(t('login.failed'), { description: message })
   } finally {
     isLoading.value = false
   }
@@ -132,9 +137,9 @@ async function handleSubmit() {
   <div :class="cn('flex flex-col gap-6', props.class)">
     <Card>
       <CardHeader>
-        <CardTitle>登录您的账户</CardTitle>
+        <CardTitle>{{ t('login.title') }}</CardTitle>
         <CardDescription>
-          请在下方输入您的电子邮件以登录您的账户
+          {{ t('login.description') }}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -142,12 +147,12 @@ async function handleSubmit() {
           <FieldGroup>
             <!-- 邮箱 -->
             <Field :data-invalid="hasSubmitted && !!fieldErrors.email?.length">
-              <FieldLabel for="email">邮箱</FieldLabel>
+              <FieldLabel for="email">{{ t('login.email') }}</FieldLabel>
               <Input
                 id="email"
                 v-model="email"
                 type="email"
-                placeholder="m@example.com"
+                :placeholder="t('login.emailPlaceholder')"
                 :disabled="isLoading"
                 required
                 @blur="validateField('email')"
@@ -159,12 +164,12 @@ async function handleSubmit() {
             <!-- 密码 -->
             <Field :data-invalid="hasSubmitted && !!fieldErrors.password?.length">
               <div class="flex items-center">
-                <FieldLabel for="password">密码</FieldLabel>
+                <FieldLabel for="password">{{ t('login.password') }}</FieldLabel>
                 <a
                   href="#"
                   class="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                 >
-                  忘记密码了?
+                  {{ t('login.forgotPassword') }}
                 </a>
               </div>
               <Input
@@ -190,14 +195,14 @@ async function handleSubmit() {
             <Field>
               <Button type="submit" :disabled="isLoading" class="w-full">
                 <UiSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-                {{ isLoading ? '登录中...' : '登录' }}
+                {{ isLoading ? t('login.submitting') : t('login.submit') }}
               </Button>
               <Button variant="outline" type="button" :disabled="isLoading" class="w-full">
-                使用 Google 登录
+                {{ t('login.googleLogin') }}
               </Button>
               <FieldDescription class="text-center">
-                没有账号？
-                <a href="#">注册</a>
+                {{ t('login.noAccount') }}
+                <a href="#">{{ t('register') }}</a>
               </FieldDescription>
             </Field>
           </FieldGroup>
