@@ -40,25 +40,45 @@ export const useMenuStore = defineStore('menu', () => {
 
     function collectRoutes(list: MenuItem[]) {
       for (const item of list) {
-        if (item.url && !router.hasRoute(item.title)) {
+        // 菜单树 生成路由表，只获取菜单最小节点，其余的都是菜单分组，无需注册成为路由
+        if (item.items && item.items.length > 0) {
+          collectRoutes(item.items)
+        } else {
           routeConfigs.push({
-            path: item.url,
+            path: item.url ? item.url : "/",
             name: item.title,
             component: () => import('@/pages/generic-page.vue'),
             meta: { auth: true, title: item.title },
           })
         }
-        if (item.items && item.items.length > 0) {
-          collectRoutes(item.items)
-        }
+        // if (item.url && !router.hasRoute(item.title)) {
+        //   routeConfigs.push({
+        //     path: item.url,
+        //     name: item.title,
+        //     component: () => import('@/pages/generic-page.vue'),
+        //     meta: { auth: true, title: item.title },
+        //   })
+        // }
+        // if (item.items && item.items.length > 0) {
+        //   collectRoutes(item.items)
+        // }
       }
     }
 
     collectRoutes(items)
+    console.log(routeConfigs)
 
-    // 用 setupLayouts 统一包裹布局，再逐条 addRoute
+    // setupLayouts 包裹布局：name 会落到子路由上，需提到外层才能被 removeRoute 清除
     const wrapped = setupLayouts(routeConfigs)
+
+    console.log(wrapped)
     for (const route of wrapped) {
+      if (route.children?.[0]?.name) {
+        // 包裹了 Layouts 路由，name 在子路由上，把 name 提到上级路由去，后续才能正常清除路由
+        route.name = route.children[0].name
+        // 为子路由 name 重命名，防止和父级路由 name 一样
+        route.children[0].name = `${route.children[0].name as String}Index`
+      }
       router.addRoute(route)
     }
   }
@@ -77,13 +97,15 @@ export const useMenuStore = defineStore('menu', () => {
   }
 
   function removeItemRoutes(router: Router, item: MenuItem) {
-    if (item.url && router.hasRoute(item.title)) {
-      router.removeRoute(item.title)
-    }
+    // if (item.url && router.hasRoute(item.title)) {
+    //   router.removeRoute(item.title)
+    // }
     if (item.items) {
       for (const child of item.items) {
         removeItemRoutes(router, child)
       }
+    } else {
+      router.removeRoute(item.title)
     }
   }
 

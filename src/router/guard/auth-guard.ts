@@ -9,22 +9,27 @@ import { useGuardContext } from './guard-context'
  */
 export function setupAuthGuard(router: Router) {
   router.beforeEach((to, from) => {
-    const { isLogin, token, isAuthPage, isFromAuthPage } = useGuardContext(to, from)
+    const { isLogin, isAuthPage } = useGuardContext(to, from)
 
-    // 已登录：访问登录页 → 重定向离开
-    if (isLogin.value && token.value && isAuthPage) {
-      if (from.path && from.path !== to.path && !isFromAuthPage) {
-        return from
-      }
-      return { path: '/' }
-    }
+    console.log("setupAuthGuard")
+    console.log(isLogin.value)
+    console.log(isAuthPage)
 
-    // 未登录：访问需认证页面 → 重定向到登录页
-    if (to.meta.auth && !isLogin.value && !isAuthPage) {
+    // 未登录 + 不是公共页面 → 立即重定向，不继续匹配
+    if (!isLogin.value && !isAuthPage) {
       return {
         path: '/login',
+        replace: true,
         query: { redirect: to.fullPath },
       }
     }
+
+    // 已登录：访问登录页 → 重定向离开
+    if (isLogin.value && isAuthPage) {
+      return { path: '/' }
+    }
+
+    // 所有其他情况：返回 true 或 undefined 放行
+    return true
   })
 }

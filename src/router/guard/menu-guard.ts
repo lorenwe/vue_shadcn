@@ -12,23 +12,38 @@ import { useGuardContext } from './guard-context'
  */
 export function setupMenuGuard(router: Router) {
   router.beforeEach(async (to, from) => {
-    const { isLogin, token, isAuthPage, isFromAuthPage } = useGuardContext(to, from)
-
-    // 已登录 + 非登录页：确保菜单已加载
-    if (isLogin.value && token.value && !isAuthPage) {
-      const menuStore = useMenuStore(pinia)
+    const { isLogin, isAuthPage, isFromAuthPage } = useGuardContext(to, from)
+    const menuStore = useMenuStore(pinia)
+    console.log("setupMenuGuard")
+    console.log("menuStore.isLoaded", menuStore.isLoaded)
+    // 已登录
+    if (isLogin.value) {
       if (!menuStore.isLoaded) {
         await menuStore.fetchMenu(router)
-        return to.fullPath
       }
+    }
+
+    // 已登录 + 从登录页跳转过来 → 加载菜单
+    if (isLogin.value && isFromAuthPage && !isAuthPage) {
+      return to.fullPath // 中断当前导航，并使用新的路径重新导航
     }
 
     // 未登录 + 前往登录页：清除菜单（登出场景）
     if (!isLogin.value && isAuthPage && !isFromAuthPage) {
-      const menuStore = useMenuStore(pinia)
       if (menuStore.isLoaded) {
         menuStore.clear(router)
       }
     }
+
+    // 检查路由是否存在
+    const routeExists = router.getRoutes().some(r => r.path === to.path)
+
+    console.log("menuStore.isLoaded", menuStore.isLoaded)
+    console.log("routeExists", routeExists)
+    if (routeExists) {
+      return to.fullPath
+    }
+
+    return true
   })
 }

@@ -11,10 +11,12 @@ import { useAuthStore } from '@/stores/auth'
 export function useGuardContext(to: RouteLocationNormalized, from: RouteLocationNormalized) {
   const authStore = useAuthStore(pinia)
   const { isLogin, token } = storeToRefs(authStore)
-
-  const authPaths = ['/login']
+  // 定义认证页面路径列表
+  const authPaths = ['/login', '/register']
+  // 判断目标页面是否为认证页面
   const isAuthPage = authPaths.includes(to.path)
-  const isFromAuthPage = authPaths.includes(from.path)
+  // 判断来源页面是否为认证页面
+  const isFromAuthPage = authPaths.includes(from.path) // 例如：从 /login 跳转 → true，从 /dashboard 跳转 → false
 
-  return { isLogin, token, isAuthPage, isFromAuthPage }
+  return { isLogin, token, isAuthPage, isFromAuthPage, authPaths }
 }
