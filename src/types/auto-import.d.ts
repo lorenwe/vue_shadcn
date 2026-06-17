@@ -9,10 +9,13 @@ declare global {
   const API_BASE_URL: typeof import('../constants/app-config').API_BASE_URL
   const API_TIMEOUT: typeof import('../constants/app-config').API_TIMEOUT
   const CONTENT_LAYOUTS: typeof import('../constants/themes').CONTENT_LAYOUTS
+  const DEFAULT_LOCALE: typeof import('../constants/i18n').DEFAULT_LOCALE
   const EffectScope: typeof import('vue').EffectScope
   const RADIUS: typeof import('../constants/themes').RADIUS
+  const SUPPORTED_LOCALES: typeof import('../constants/i18n').SUPPORTED_LOCALES
   const THEMES: typeof import('../constants/themes').THEMES
   const THEME_PRIMARY_COLORS: typeof import('../constants/themes').THEME_PRIMARY_COLORS
+  const appLocale: typeof import('../composables/use-i18n-loader').appLocale
   const colorMode: typeof import('../composables/use-color-mode').colorMode
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
@@ -68,6 +71,8 @@ declare global {
   const useAuthStore: typeof import('../stores/auth').useAuthStore
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
+  const useI18nLoader: typeof import('../composables/use-i18n-loader').useI18nLoader
+  const useI18nStore: typeof import('../stores/i18n').useI18nStore
   const useId: typeof import('vue').useId
   const useMenuStore: typeof import('../stores/menu').useMenuStore
   const useModel: typeof import('vue').useModel

@@ -1,6 +1,6 @@
 import { BadgeHelpIcon, BellDotIcon, BirdIcon, BoxesIcon, BugIcon, ComponentIcon, CreditCardIcon, LayoutDashboardIcon, ListTodoIcon, PaletteIcon, PictureInPicture2Icon, PodcastIcon, SettingsIcon, SquareUserRoundIcon, UserIcon, UsersIcon, WrenchIcon } from '@lucide/vue'
 
-import type { NavGroup, MenuItem } from '@/components/app-sidebar/types'
+import type { MenuItem } from '@/components/app-sidebar/types'
 
 export function useSidebar() {
   const settingsNavItems = [
@@ -11,7 +11,7 @@ export function useSidebar() {
     { title: 'Display', url: '/settings/display', icon: PictureInPicture2Icon },
   ]
 
-  const navData = ref<NavGroup[]> ([
+  const navData = ref<any> ([
     {
       title: 'General',
       items: [
@@ -71,7 +71,7 @@ export function useSidebar() {
     },
   ])
 
-  const otherPages = ref<NavGroup[]>([
+  const otherPages = ref<any>([
     {
       title: 'Other',
       items: [

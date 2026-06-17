@@ -152,7 +152,7 @@ async function handleSubmit() {
                 id="email"
                 v-model="email"
                 type="email"
-                :placeholder="t('login.emailPlaceholder')"
+                placeholder="t('login.emailPlaceholder')"
                 :disabled="isLoading"
                 required
                 @blur="validateField('email')"
