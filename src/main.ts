@@ -6,10 +6,10 @@ import '@/assets/style/themes.css'
 import '@/assets/style/view-transition.css' // 主题切换动画效果
 import { setupPlugins } from '@/plugins'
 
-function bootstrap() {
+async function bootstrap() {
   const app = createApp(App)
 
-  setupPlugins(app)
+  await setupPlugins(app)
 
   app.mount('#app')
 }
