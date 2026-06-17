@@ -4,13 +4,12 @@ import { LanguagePackSchema } from './types'
 import type { LanguagePack } from './types'
 
 /**
- * 从服务端获取指定 locale 的语言包
+ * 从服务端获取完整语言包（所有语言一次性返回）
  */
-export async function fetchLanguagePack(locale: string): Promise<LanguagePack> {
+export async function fetchLanguagePack(): Promise<LanguagePack> {
   const { apiFetch } = useApiFetch()
   const res = await apiFetch('/i18n/pack', {
     method: 'POST',
-    body: { locale },
   })
 
   const parsed = ApiResponseSchema(LanguagePackSchema).parse(res)
