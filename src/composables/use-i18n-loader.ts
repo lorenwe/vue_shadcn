@@ -21,6 +21,7 @@ export function useI18nLoader() {
 
   // 从接口加载指定语言包 语言标识 zh-CN / en-US
   async function loadLocaleMessages(i18n: I18n) {
+    console.log(`[i18n] 开始加载远程多语言包`)
     try {
       const remoteData = await fetchLanguagePack()
       // 合并远程语言包到 i18n

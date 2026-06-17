@@ -23,6 +23,8 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { useI18nLoader } from '@/composables/use-i18n-loader'
+import { getI18nInstance } from '@/plugins/i18n/setup'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
@@ -119,7 +121,11 @@ async function handleSubmit() {
   isLoading.value = true
   try {
     await authStore.login(result.data.email, result.data.password)
+    // 加载远程多语言数据
     toast.success(t('login.success'), { description: t('login.welcome') })
+    // 拉取远程语言包，逐个 locale 安全合并
+    const { loadLocaleMessages } = useI18nLoader()
+    await loadLocaleMessages(getI18nInstance())
     // 优先跳转到 redirect 参数指定的页面，其次首页
     const redirect = (route.query.redirect as string) || '/'
     await router.push(redirect)

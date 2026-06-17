@@ -5,6 +5,8 @@ import { toast } from 'vue-sonner'
 
 import { useSidebar } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/stores/auth'
+import { getI18nInstance } from '@/plugins/i18n/setup'
+import { useI18nLoader } from '@/composables/use-i18n-loader'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -19,6 +21,8 @@ async function logout() {
   try {
     await authStore.logout()
     toast.success('已退出登录')
+    const { resetToLocal } = useI18nLoader()
+    await resetToLocal(getI18nInstance())
     await router.push('/login')
   } catch {
     toast.error('退出失败，请重试')
