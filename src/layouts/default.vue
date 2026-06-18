@@ -2,6 +2,7 @@
 import { useCookies } from '@vueuse/integrations/useCookies'
 import AppSidebar from '@/components/app-sidebar/index.vue'
 import CommandMenuPanel from '@/components/command-menu-panel/index.vue'
+import LanguageChange from '@/components/language-change.vue'
 import { SIDEBAR_COOKIE_NAME } from '@/components/ui/sidebar/utils'
 import { cn } from '@/lib/utils'
 
@@ -19,7 +20,7 @@ const contentLayout = "centered"
                 <CommandMenuPanel />
                 <div class="flex-1" />
                 <div class="ml-auto flex items-center space-x-4">
-                    <!-- <LanguageChange /> -->
+                    <LanguageChange />
                     <ToggleTheme />
                     <CustomThemeThemePopover />
                 </div>

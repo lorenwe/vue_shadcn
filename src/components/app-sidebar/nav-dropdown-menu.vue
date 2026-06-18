@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { sidebarData } from '@/components/app-sidebar/data/sidebar-data.ts'
 import NavDropdownMenu from '@/components/app-sidebar/nav-dropdown-menu.vue'
-import MenuButton2 from './menu-button2.vue'
+import MenuButton from './menu-button.vue'
 import type { MenuItem } from './types'
 import { isExternalUrl } from '@/utils/is-external-url'
 import { useRoute } from 'vue-router'
@@ -23,7 +22,7 @@ function isActive(menu: MenuItem): boolean {
 <template>
     <!-- 无子节点：普通链接 -->
     <UiSidebarMenuItem v-if="!menuItem.items">
-        <MenuButton2
+        <MenuButton
             :is-active="isActive(menuItem)"
             :tooltip="menuItem.title"
             :is-external-url="isExternalUrl(menuItem.url)"

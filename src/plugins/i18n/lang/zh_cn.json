@@ -23,5 +23,6 @@
   "login.checkCredentials": "登录失败，请检查邮箱和密码",
   "common.logout": "退出",
   "common.logoutSuccess": "已退出登录",
-  "common.logoutFailed": "退出失败，请重试"
+  "common.logoutFailed": "退出失败，请重试",
+  "common.language.change": "切换语言"
 }

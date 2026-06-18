@@ -23,5 +23,6 @@
   "login.checkCredentials": "Login failed, please check your email and password",
   "common.logout": "Log out",
   "common.logoutSuccess": "Logged out successfully",
-  "common.logoutFailed": "Logout failed, please try again"
+  "common.logoutFailed": "Logout failed, please try again",
+  "common.language.change": "Change Language"
 }

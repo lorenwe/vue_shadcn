@@ -4,12 +4,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@lucide/vue'
 import { useSidebarNavigation } from '@/composables/use-sidebar-navigation'
 import { isExternalUrl } from '@/utils/is-external-url'
 
-import type { NavGroup, NavItem } from './types'
+import type { MenuItem } from './types'
 
 import MenuButton from './menu-button.vue'
 
 const { navMain } = defineProps<{
-  navMain: NavGroup[]
+  navMain: MenuItem[]
 }>()
 
 const {
@@ -31,7 +31,7 @@ function handleGoBack() {
 
 <template>
   <div class="w-full overflow-hidden">
-    <!-- Root level: show all groups -->
+    <!-- 根级别：显示所有组 -->
     <div v-if="navigationPath.length === 0" key="root">
       <UiSidebarGroup v-for="group in navMain" :key="group.title">
         <UiSidebarGroupLabel>{{ group.title }}</UiSidebarGroupLabel>
@@ -43,7 +43,7 @@ function handleGoBack() {
                 :is-active="isMenuItemActive(menu)"
                 :tooltip="menu.title"
                 :is-external-url="isExternalUrl(menu.url)"
-                :menu="menu as NavItem"
+                :menu="menu as MenuItem"
               />
             </UiSidebarMenuItem>
 
@@ -90,10 +90,10 @@ function handleGoBack() {
             <!-- Leaf item -->
             <UiSidebarMenuItem v-if="!item.items">
               <MenuButton
-                :is-active="isMenuItemActive(item as NavItem)"
+                :is-active="isMenuItemActive(item as MenuItem)"
                 :tooltip="item.title"
                 :is-external-url="isExternalUrl((item as any).url)"
-                :menu="item as NavItem"
+                :menu="item as MenuItem"
               />
             </UiSidebarMenuItem>
 
@@ -102,7 +102,7 @@ function handleGoBack() {
               <UiSidebarMenuButton
                 class="cursor-pointer"
                 :tooltip="item.title"
-                @click="enterMenu(item as NavItem)"
+                @click="enterMenu(item as MenuItem)"
               >
                 <component :is="item.icon" v-if="item.icon" />
                 <span>{{ item.title }}</span>

@@ -6,7 +6,7 @@ import type { MenuItem } from './types'
 
 // import NavTeamCollapsible from './nav-team-collapsible.vue'
 // import NavTeamVercel from './nav-team-vercel.vue'
-import NavTeamCollapsible2 from './nav-team-collapsible2.vue'
+import NavTeamCollapsible from './nav-team-collapsible.vue'
 
 const { menuItem } = defineProps<{
   menuItem: MenuItem[]
@@ -31,6 +31,6 @@ const effectiveMode = computed(() => {
 </script>
 
 <template>
-  <!-- <NavTeamVercel v-if="effectiveMode === 'vercel'" :nav-main="navMain" /> -->
-  <NavTeamCollapsible2 :menu-item="menuItem" />
+  <NavTeamVercel v-if="effectiveMode === 'vercel'" :nav-main="menuItem" />
+  <NavTeamCollapsible v-else :menu-item="menuItem" />
 </template>

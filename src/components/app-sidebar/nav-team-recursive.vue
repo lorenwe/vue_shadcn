@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ChevronRightIcon, ExternalLinkIcon } from '@lucide/vue'
+import { ChevronRightIcon } from '@lucide/vue'
 import { useRoute } from 'vue-router'
 import { isExternalUrl } from '@/utils/is-external-url'
 import type { MenuItem } from './types'
-import MenuButton2 from './menu-button2.vue'
+import MenuButton from './menu-button.vue'
 import NavTeamRecursive from '@/components/app-sidebar/nav-team-recursive.vue'
 
 const { menuItem } = defineProps<{
@@ -32,7 +32,7 @@ function isCollapsed(menu: MenuItem): boolean {
 <template>
   <!-- 无子节点：普通链接 -->
   <UiSidebarMenuItem v-if="!menuItem.items">
-      <MenuButton2
+      <MenuButton
           :is-active="isActive(menuItem)"
           :tooltip="menuItem.title"
           :is-external-url="isExternalUrl(menuItem.url)"

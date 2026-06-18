@@ -2,13 +2,13 @@ import { useSessionStorage } from '@vueuse/core'
 // import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import type { NavGroup, NavItem } from '@/components/app-sidebar/types'
+import type { MenuItem } from '@/components/app-sidebar/types'
 
 /**
  * Composable for managing Vercel-style sidebar menu navigation
  * Handles menu state transitions between different menu levels
  */
-export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
+export function useSidebarNavigation(navMain: Readonly<MenuItem[]>) {
   const route = useRoute()
 
   // Navigation path stack, e.g., ['Pages', 'Auth']
@@ -22,7 +22,7 @@ export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
    * Find a menu item by its path in the navigation hierarchy
    * Searches across all NavGroups to find the item
    */
-  function findItemByPath(path: string[]): NavItem | null {
+  function findItemByPath(path: string[]): MenuItem | null {
     if (path.length === 0)
       return null
 
@@ -31,8 +31,8 @@ export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
     let current: any = null
 
     // Search in all NavGroups for the first level item
-    for (const group of navMain as NavGroup[]) {
-      const found = group.items.find((item: NavItem) => item.title === firstTitle)
+    for (const group of navMain as MenuItem[]) {
+      const found = group.items?.find((item: MenuItem) => item.title === firstTitle)
       if (found) {
         if (path.length === 1)
           return found
@@ -50,7 +50,7 @@ export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
       if (!current.items)
         return null
 
-      const found = current.items.find((item: NavItem) => item.title === title)
+      const found = current.items.find((item: MenuItem) => item.title === title)
       if (!found)
         return null
       if (i === path.length - 1)
@@ -88,7 +88,7 @@ export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
   /**
    * Enter next level menu
    */
-  function enterMenu(item: NavItem) {
+  function enterMenu(item: MenuItem) {
     if (item.items && item.items.length > 0) {
       navigationPath.value.push(item.title)
       saveNavigationPath()
@@ -135,13 +135,13 @@ export function useSidebarNavigation(navMain: Readonly<NavGroup[]>) {
   /**
    * Check if a menu item is currently active based on route
    */
-  function isMenuItemActive(item: NavItem): boolean {
+  function isMenuItemActive(item: MenuItem): boolean {
     const currentPath = route.path
     if (item.url) {
       return currentPath === item.url
     }
     if (item.items) {
-      return item.items.some(subItem => isMenuItemActive(subItem as NavItem))
+      return item.items.some(subItem => isMenuItemActive(subItem as MenuItem))
     }
     return false
   }

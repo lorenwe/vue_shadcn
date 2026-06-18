@@ -1,111 +1,32 @@
 <script lang="ts" setup>
-import { ChevronRightIcon, ExternalLinkIcon } from '@lucide/vue'
-import { useRoute } from 'vue-router'
 import { useSidebar } from '@/components/ui/sidebar'
-import { isExternalUrl } from '@/utils/is-external-url'
+import NavTeamRecursive from '@/components/app-sidebar/nav-team-recursive.vue'
+import NavDropdownMenu from '@/components/app-sidebar/nav-dropdown-menu.vue'
 
-import type { NavGroup, NavItem } from './types'
+import type { MenuItem } from './types'
 
-import MenuButton from './menu-button.vue'
-
-const { navMain } = defineProps<{
-  navMain: NavGroup[]
+const { menuItem } = defineProps<{
+  menuItem: MenuItem[]
 }>()
-
-const route = useRoute()
-const initialPath = route.path
 
 const { state, isMobile } = useSidebar()
 
-function isCollapsed(menu: NavItem): boolean {
-  if (menu.url === initialPath)
-    return true
-  return !!menu.items?.some(item => item.url === initialPath)
-}
-
-function isActive(menu: NavItem): boolean {
-  const pathname = route.path
-  if (menu.url) {
-    return pathname === menu.url
-  }
-  return !!menu.items?.some(item => item.url === pathname)
-}
 </script>
 
 <template>
-  <UiSidebarGroup v-for="group in navMain" :key="group.title">
-    <UiSidebarGroupLabel>{{ group.title }}</UiSidebarGroupLabel>
+  <UiSidebarGroup>
     <UiSidebarMenu>
-      <template v-for="menu in group.items" :key="menu.title">
-        <UiSidebarMenuItem v-if="!menu.items">
-          <MenuButton
-            :is-active="isActive(menu)"
-            :tooltip="menu.title"
-            :is-external-url="isExternalUrl(menu.url)"
-            :menu="menu as NavItem"
-          />
-        </UiSidebarMenuItem>
-
-        <UiSidebarMenuItem v-else >
-          <!-- 侧边栏已展开 -->
-          <!-- 折叠面板 -->
-          <UiCollapsible
-            v-if="state !== 'collapsed' || isMobile"
-            as-child :default-open="isCollapsed(menu)"
-            class="group/collapsible"
-          >
-            <UiSidebarMenuItem>
-              <UiCollapsibleTrigger as-child>
-                <UiSidebarMenuButton :tooltip="menu.title">
-                  <component :is="menu.icon" v-if="menu.icon" />
-                  <span>{{ menu.title }}</span>
-                  <ChevronRightIcon
-                    class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-                  />
-                </UiSidebarMenuButton>
-              </UiCollapsibleTrigger>
-            </UiSidebarMenuItem>
-            <UiCollapsibleContent>
-              <UiSidebarMenuSub>
-                <UiSidebarMenuSubItem v-for="subItem in menu.items" :key="subItem.title">
-                  <UiSidebarMenuSubButton as-child :is-active="isActive(subItem as NavItem)">
-                    <a v-if="isExternalUrl(subItem?.url)" :href="subItem?.url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
-                      <component :is="subItem.icon" v-if="subItem.icon" />
-                      <span>{{ subItem.title }}</span>
-                      <ExternalLinkIcon class="w-4 h-4 ml-auto" />
-                    </a>
-                    <router-link v-else :to="subItem?.url || '/'">
-                      <component :is="subItem.icon" v-if="subItem.icon" />
-                      <span>{{ subItem.title }}</span>
-                    </router-link>
-                  </UiSidebarMenuSubButton>
-                </UiSidebarMenuSubItem>
-              </UiSidebarMenuSub>
-            </UiCollapsibleContent>
-          </UiCollapsible>
-
-          <!-- 侧边栏已折叠 -->
-          <UiDropdownMenu v-else>
-            <UiDropdownMenuTrigger as-child>
-              <UiSidebarMenuButton :tooltip="menu.title">
-                <component :is="menu.icon" v-if="menu.icon" />
-                <span>{{ menu.title }}</span>
-              </UiSidebarMenuButton>
-            </UiDropdownMenuTrigger>
-            <UiDropdownMenuContent align="start" side="right">
-              <UiDropdownMenuLabel>{{ menu.title }}</UiDropdownMenuLabel>
-              <UiDropdownMenuSeparator />
-              <UiDropdownMenuItem v-for="subItem in menu.items" :key="subItem.title" as-child>
-                <MenuButton
-                  :is-active="isActive(subItem as NavItem)"
-                  :tooltip="subItem.title"
-                  :is-external-url="isExternalUrl(subItem?.url)"
-                  :menu="subItem as NavItem"
-                />
-              </UiDropdownMenuItem>
-            </UiDropdownMenuContent>
-          </UiDropdownMenu>
-        </UiSidebarMenuItem>
+      <template v-if="state !== 'collapsed' || isMobile">
+        <!-- 侧边栏已展开 -->
+        <template v-for="menu in menuItem" :key="menu.title">
+          <NavTeamRecursive :menu-item="menu" />
+        </template>
+      </template>
+      <template v-else>
+        <!-- 侧边栏已折叠 -->
+        <template v-for="menu in menuItem" :key="menu.title">
+          <NavDropdownMenu :menu-item="menu" />
+        </template>
       </template>
     </UiSidebarMenu>
   </UiSidebarGroup>
