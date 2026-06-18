@@ -17,7 +17,7 @@ declare module 'vue' {
     AppSidebarNavDropdownMenu: typeof import('./../components/app-sidebar/nav-dropdown-menu.vue')['default']
     AppSidebarNavFooter: typeof import('./../components/app-sidebar/nav-footer.vue')['default']
     AppSidebarNavTeam: typeof import('./../components/app-sidebar/nav-team.vue')['default']
-    AppSidebarNavTeam2: typeof import('./../components/app-sidebar/nav-team2.vue')['default']
+    AppSidebarNavTeam2: typeof import('../components/app-sidebar/nav-team.vue/index.js')['default']
     AppSidebarNavTeamAdd: typeof import('./../components/app-sidebar/nav-team-add.vue')['default']
     AppSidebarNavTeamCollapsible: typeof import('./../components/app-sidebar/nav-team-collapsible.vue')['default']
     AppSidebarNavTeamCollapsible2: typeof import('../components/app-sidebar/nav-team-collapsible.vue/index.js')['default']

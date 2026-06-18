@@ -2,7 +2,7 @@
 
 import { menuData, teams } from './data/sidebar-data.ts';
 import NavFooter from './nav-footer.vue'
-import NavTeam2 from './nav-team2.vue'
+import NavTeam from './nav-team.vue'
 import TeamSwitcher from './team-switcher.vue'
 </script>
 
@@ -13,7 +13,7 @@ import TeamSwitcher from './team-switcher.vue'
     </UiSidebarHeader>
 
     <UiSidebarContent>
-      <NavTeam2 :menu-item="menuData" />
+      <NavTeam :menu-item="menuData" />
     </UiSidebarContent>
 
     <UiSidebarFooter>

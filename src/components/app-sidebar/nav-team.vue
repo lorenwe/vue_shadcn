@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import { useSidebar } from '@/components/ui/sidebar'
 import { useSidebarConfigStore } from '@/stores/sidebar-config'
-
-import type { NavGroup } from './types'
-
+import type { MenuItem } from './types.ts'
 import NavTeamCollapsible from './nav-team-collapsible.vue'
-import NavTeamVercel from './nav-team-vercel.vue'
 
-const { navMain } = defineProps<{
-  navMain: NavGroup[]
+const { menuItem } = defineProps<{
+  menuItem: MenuItem[]
 }>()
 
 const { state } = useSidebar()
@@ -30,6 +27,5 @@ const effectiveMode = computed(() => {
 </script>
 
 <template>
-  <NavTeamVercel v-if="effectiveMode === 'vercel'" :nav-main="navMain" />
-  <NavTeamCollapsible v-else :nav-main="navMain" />
+  <NavTeamCollapsible :menu-item="menuItem" />
 </template>
