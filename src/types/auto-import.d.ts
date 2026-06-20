@@ -10,7 +10,9 @@ declare global {
   const API_TIMEOUT: typeof import('../constants/app-config').API_TIMEOUT
   const CONTENT_LAYOUTS: typeof import('../constants/themes').CONTENT_LAYOUTS
   const DEFAULT_LOCALE: typeof import('../constants/i18n').DEFAULT_LOCALE
+  const DEFAULT_PAGE_SIZE: typeof import('../constants/pagination').DEFAULT_PAGE_SIZE
   const EffectScope: typeof import('vue').EffectScope
+  const PAGE_SIZES: typeof import('../constants/pagination').PAGE_SIZES
   const RADIUS: typeof import('../constants/themes').RADIUS
   const SUPPORTED_LOCALES: typeof import('../constants/i18n').SUPPORTED_LOCALES
   const THEMES: typeof import('../constants/themes').THEMES
