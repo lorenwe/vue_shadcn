@@ -176,8 +176,8 @@ function toggleCheck(key: string) {
 // ===== 获取节点状态 =====
 function getNodeState(key: string): 'checked' | 'unchecked' | 'half' {
   let res: 'checked' | 'unchecked' | 'half'
-  console.log("getNodeState checkedSet", checkedSet.value)
-  console.log("getNodeState halfCheckedSet", halfCheckedSet.value)
+  // console.log("getNodeState checkedSet", checkedSet.value)
+  // console.log("getNodeState halfCheckedSet", halfCheckedSet.value)
   if (checkedSet.value.has(key)) {
     res = 'checked'
   } else if (halfCheckedSet.value.has(key)) {
@@ -223,7 +223,7 @@ const checkedLeafKeys = computed(() => {
 // 返回类名对象
 function getCheckboxClasses(key: string) {
   const state = getNodeState(key)
-  console.log("getCheckboxClasses", key, state)
+  // console.log("getCheckboxClasses", key, state)
   return {
     'border-gray-300 hover:border-blue-500': state === 'unchecked',
     'bg-blue-500 border-blue-500 hover:bg-blue-600': state === 'checked' || state === 'half',
