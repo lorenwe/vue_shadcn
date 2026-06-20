@@ -5,9 +5,11 @@ import CommandMenuPanel from '@/components/command-menu-panel/index.vue'
 import LanguageChange from '@/components/language-change.vue'
 import { SIDEBAR_COOKIE_NAME } from '@/components/ui/sidebar/utils'
 import { cn } from '@/lib/utils'
+import { storeToRefs } from 'pinia'
 
 const defaultOpen = useCookies([SIDEBAR_COOKIE_NAME])
-const contentLayout = "centered"
+const themeStore = useThemeStore()
+const { contentLayout } = storeToRefs(themeStore)
 </script>
 
 <template>
