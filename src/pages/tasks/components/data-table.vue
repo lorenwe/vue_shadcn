@@ -5,7 +5,7 @@ import type { DataTableProps } from '@/components/data-table'
 
 import { DataTable, DataTableBulkActions, useGenerateVueTable } from '@/components/data-table'
 
-import type { Task } from '../data/schema'
+import type { Task } from '@/validators/task.validator'
 
 // import DataTableToolbar from './data-table-toolbar.vue'
 // import TaskDeleteBatch from './task-delete-batch.vue'
@@ -43,7 +43,7 @@ const taskDeleteBatchOpen = ref(false)
     /> -->
   </DataTableBulkActions>
 
-  <DataTable :columns :table :data :loading>
+  <DataTable :columns :table :data :loading :server-pagination="serverPagination">
     <template #toolbar>
       <!-- <DataTableToolbar :table="table" class="w-full overflow-x-auto" /> -->
     </template>

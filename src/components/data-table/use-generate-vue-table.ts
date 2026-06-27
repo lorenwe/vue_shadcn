@@ -76,7 +76,14 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
   }
 
   if (useServerPagination) {
-    tableConfig.pageCount = pageCount.value
+    // 使用 getter 保持响应式，total/pageSize 变化时 pageCount 自动更新
+    Object.defineProperty(tableConfig, 'pageCount', {
+      get() {
+        return pageCount.value
+      },
+      enumerable: true,
+      configurable: true,
+    })
     tableConfig.manualPagination = true
   }
   else {

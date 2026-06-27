@@ -6,17 +6,17 @@ import { EllipsisIcon, FilePenLineIcon, Trash2Icon } from '@lucide/vue'
 
 // import { Modal, ModalContent } from '@/components/prop-ui/modal'
 
-import type { Task } from '../data/schema'
+import type { Task } from '@/validators/task.validator'
 
 import { labels } from '../data/data'
-import { taskSchema } from '../data/schema'
+import { TaskSchema } from '@/validators/task.validator'
 
 const props = defineProps<DataTableRowActionsProps>()
 
 interface DataTableRowActionsProps {
   row: Row<Task>
 }
-const task = computed(() => taskSchema.parse(props.row.original))
+const task = computed(() => TaskSchema.parse(props.row.original))
 
 const taskLabel = ref(task.value.label)
 

@@ -4,7 +4,41 @@ import { BasicPage } from '@/components/main-layout'
 import { columns } from './components/columns'
 import DataTable from './components/data-table.vue'
 
-import tasks from './data/tasks.json'
+import { useTaskListQuery } from '@/query/task/useTask'
+import type { TaskListParams } from '@/api/task/types'
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination'
+
+// 1. 查询分页参数
+const searchParams = ref<TaskListParams>({
+  page: 1,
+  pageSize: DEFAULT_PAGE_SIZE,
+  keyword: '',
+  status: undefined,
+  sortBy: 'createTime',
+  sortOrder: 'desc',
+})
+
+// 查询任务列表
+const { isPending, isFetching, data } = useTaskListQuery({
+  params: searchParams,
+})
+
+// 3. 组装服务端分页对象，传给表格
+const serverPagination = computed(() => ({
+  page: searchParams.value.page,
+  pageSize: searchParams.value.pageSize,
+  total: data.value?.total ?? 0,
+  onPageChange: (newPage: number) => {
+    searchParams.value.page = newPage
+  },
+  onPageSizeChange: (newSize: number) => {
+    searchParams.value.pageSize = newSize
+    searchParams.value.page = 1
+  },
+}))
+
+// 数据与总数
+const taskList = computed(() => data.value?.list ?? [])
 </script>
 
 <template>
@@ -18,7 +52,12 @@ import tasks from './data/tasks.json'
       <TaskCreate /> -->
     </template>
     <div class="overflow-x-auto">
-      <DataTable :data="tasks" :columns="columns" />
+      <DataTable
+        :data="taskList"
+        :columns="columns"
+        :loading="isPending || isFetching"
+        :server-pagination="serverPagination"
+      />
     </div>
   </BasicPage>
 </template>

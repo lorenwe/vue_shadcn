@@ -5,7 +5,7 @@ import { h } from 'vue'
 import { DataTableColumnHeader, SelectColumn } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
 
-import type { Task } from '../data/schema'
+import type { Task } from '@/validators/task.validator'
 
 import { labels, priorities, statuses } from '../data/data'
 import DataTableRowActions from './data-table-row-actions.vue'
