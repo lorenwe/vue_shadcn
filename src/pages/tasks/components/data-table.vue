@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@tanstack/vue-table'
 import { Trash2Icon } from '@lucide/vue'
 
-import type { DataTableProps } from '@/components/data-table'
+import type { ServerPagination, ServerSorting } from '@/components/data-table'
 
 import { DataTable, DataTableBulkActions, useGenerateVueTable } from '@/components/data-table'
 
@@ -10,7 +11,18 @@ import type { Task } from '@/validators/task.validator'
 // import DataTableToolbar from './data-table-toolbar.vue'
 // import TaskDeleteBatch from './task-delete-batch.vue'
 
-const props = defineProps<DataTableProps<Task>>()
+// 组件有多个根节点，禁用自动 attribute 继承避免 Vue 警告
+defineOptions({ inheritAttrs: false })
+
+// 内联声明 props 类型，确保 Vue 编译器能可靠解析所有 prop 名称
+const props = defineProps<{
+  loading?: boolean
+  columns: ColumnDef<Task, any>[]
+  data: Task[]
+  serverPagination?: ServerPagination
+  serverSorting?: ServerSorting
+}>()
+
 const table = useGenerateVueTable<Task>(props)
 
 const taskDeleteBatchOpen = ref(false)

@@ -23,7 +23,7 @@ const { isPending, isFetching, data } = useTaskListQuery({
   params: searchParams,
 })
 
-// 3. 组装服务端分页对象，传给表格
+// 2. 服务端分页
 const serverPagination = computed(() => ({
   page: searchParams.value.page,
   pageSize: searchParams.value.pageSize,
@@ -35,6 +35,19 @@ const serverPagination = computed(() => ({
     searchParams.value.pageSize = newSize
     searchParams.value.page = 1
   },
+}))
+
+// 3. 服务端排序
+function handleSortingChange(sortBy: string, sortOrder: 'asc' | 'desc') {
+  searchParams.value.sortBy = sortBy || undefined
+  searchParams.value.sortOrder = sortOrder
+  searchParams.value.page = 1 // 排序后回到第一页
+}
+
+const serverSorting = computed(() => ({
+  sortBy: searchParams.value.sortBy ?? '',
+  sortOrder: (searchParams.value.sortOrder ?? 'desc') as 'asc' | 'desc',
+  onSortingChange: handleSortingChange,
 }))
 
 // 数据与总数
@@ -57,6 +70,7 @@ const taskList = computed(() => data.value?.list ?? [])
         :columns="columns"
         :loading="isPending || isFetching"
         :server-pagination="serverPagination"
+        :server-sorting="serverSorting"
       />
     </div>
   </BasicPage>

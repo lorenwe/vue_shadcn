@@ -19,6 +19,7 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
   })
 
   const useServerPagination = !!props.serverPagination
+  const useServerSorting = !!props.serverSorting
 
   const pageIndex = computed(() => {
     if (useServerPagination && props.serverPagination) {
@@ -45,7 +46,13 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
     get data() { return props.data },
     get columns() { return props.columns },
     state: {
-      get sorting() { return sorting.value },
+      get sorting() {
+        if (useServerSorting && props.serverSorting) {
+          const { sortBy, sortOrder } = props.serverSorting
+          return sortBy ? [{ id: sortBy, desc: sortOrder === 'desc' }] : []
+        }
+        return sorting.value
+      },
       get columnFilters() { return columnFilters.value },
       get columnVisibility() { return columnVisibility.value },
       get columnPinning() { return columnPinning.value },
@@ -61,7 +68,32 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
       },
     },
     enableRowSelection: true,
-    onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
+    onSortingChange: (updaterOrValue) => {
+      if (useServerSorting && props.serverSorting) {
+        // 根据当前服务端排序状态构造 SortingState，供 updater 函数计算新值
+        const currentSorting: SortingState = props.serverSorting.sortBy
+          ? [{ id: props.serverSorting.sortBy, desc: props.serverSorting.sortOrder === 'desc' }]
+          : []
+        const newSorting = typeof updaterOrValue === 'function'
+          ? updaterOrValue(currentSorting)
+          : updaterOrValue
+
+        // 同步本地 ref（表头图标需要）
+        sorting.value = newSorting
+
+        // 通知父组件发起请求
+        const sort = newSorting[0]
+        if (sort) {
+          props.serverSorting.onSortingChange(sort.id, sort.desc ? 'desc' : 'asc')
+        }
+        else {
+          props.serverSorting.onSortingChange('', 'asc')
+        }
+      }
+      else {
+        valueUpdater(updaterOrValue, sorting)
+      }
+    },
     onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
     onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
     onColumnPinningChange: updaterOrValue => valueUpdater(updaterOrValue, columnPinning),
@@ -88,6 +120,10 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
   }
   else {
     tableConfig.getPaginationRowModel = getPaginationRowModel()
+  }
+
+  if (useServerSorting) {
+    tableConfig.manualSorting = true
   }
 
   const table = useVueTable<T>(tableConfig)

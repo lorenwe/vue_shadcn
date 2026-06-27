@@ -14,9 +14,16 @@ export interface ServerPagination {
   onPageSizeChange: (pageSize: number) => void
 }
 
+export interface ServerSorting {
+  sortBy: string
+  sortOrder: 'asc' | 'desc'
+  onSortingChange: (sortBy: string, sortOrder: 'asc' | 'desc') => void
+}
+
 export interface DataTableProps<T> {
   loading?: boolean
   columns: ColumnDef<T, any>[]
   data: T[]
   serverPagination?: ServerPagination
+  serverSorting?: ServerSorting
 }
