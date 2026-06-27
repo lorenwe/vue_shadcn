@@ -1,26 +1,54 @@
 import { useApiFetch } from '@/composables/use-fetch'
-import type { Task, TaskListParams, TaskListResponse, TaskDetailResponse } from ''
+import { TaskListParamsSchema, type TaskListParams } from './types'
+import { ApiResponseSchema, type PageResponse } from '@/types/api'
+import { TaskPageResponseSchema, type Task } from '@/validators/task.validator'
+
+type TaskPageResponse  = PageResponse<Task>
 
 /**
  * 获取任务列表
  */
-export async function fetchTasks(params: TaskListParams): Promise<TaskListResponse> {
+export async function fetchTasks(params: TaskListParams): Promise<TaskPageResponse > {
   const { apiFetch } = useApiFetch()
+
+  // 1. Zod 校验查询参数
+  const parseParamsResult = TaskListParamsSchema.safeParse(params)
+  if (!parseParamsResult.success) {
+    console.error('任务列表查询参数校验失败', parseParamsResult.error.issues)
+    throw new Error('查询参数格式不合法')
+  }
+  const validParams = parseParamsResult.data
   
-  const response = await apiFetch<TaskListResponse>('/tasks', {
-    params: {
-      page: params.page,
-      pageSize: params.pageSize,
-      keyword: params.keyword || undefined,
-      status: params.status || undefined,
-      priority: params.priority || undefined,
-      assignee: params.assignee || undefined,
-      sortBy: params.sortBy || undefined,
-      sortOrder: params.sortOrder || undefined,
+  const rawResponse = await apiFetch('/tasks', {
+    method: 'POST',
+    body: {
+      page: validParams.page,
+      pageSize: validParams.pageSize,
+      keyword: validParams.keyword,
+      status: validParams.status,
+      priority: validParams.priority,
+      assignee: validParams.assignee,
+      sortBy: validParams.sortBy,
+      sortOrder: validParams.sortOrder,
     },
   })
-  
-  return response
+
+  // 3. 校验后端统一外层包装 + 内部分页数据
+  const fullSchema = ApiResponseSchema(TaskPageResponseSchema)
+  const parseResult = fullSchema.safeParse(rawResponse)
+  if (!parseResult.success) {
+    console.error('接口返回数据格式错误', parseResult.error.issues)
+    throw new Error('服务端返回数据异常')
+  }
+
+  const parsed = parseResult.data
+  // 业务状态码判断
+  if (parsed.code !== 0) {
+    throw new Error(parsed.message || '获取任务列表失败')
+  }
+
+  // 返回分页数据
+  return parsed.data
 }
 
 // /**

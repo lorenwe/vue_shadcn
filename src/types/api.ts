@@ -26,3 +26,16 @@ export function ApiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
 export type ApiResponse<T extends z.ZodTypeAny> = z.infer<
   ReturnType<typeof ApiResponseSchema<T>>
 >
+
+
+// 通用分页构造器
+export function pageResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
+  return z.object({
+    list: z.array(itemSchema),
+    total: z.number().int().min(0),
+    page: z.number().int().min(1),
+    pageSize: z.number().int().min(1)
+  })
+}
+type PageSchemaFactoryReturn<T extends z.ZodTypeAny> = ReturnType<typeof pageResponseSchema<T>>
+export type PageResponse<T> = z.infer<PageSchemaFactoryReturn<z.ZodType<T>>>
