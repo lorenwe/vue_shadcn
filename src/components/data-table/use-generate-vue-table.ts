@@ -48,8 +48,10 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
     state: {
       get sorting() {
         if (useServerSorting && props.serverSorting) {
-          const { sortBy, sortOrder } = props.serverSorting
-          return sortBy ? [{ id: sortBy, desc: sortOrder === 'desc' }] : []
+          return props.serverSorting.orderBy.map(s => ({
+            id: s.field,
+            desc: s.order === 'desc',
+          }))
         }
         return sorting.value
       },
@@ -71,9 +73,10 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
     onSortingChange: (updaterOrValue) => {
       if (useServerSorting && props.serverSorting) {
         // 根据当前服务端排序状态构造 SortingState，供 updater 函数计算新值
-        const currentSorting: SortingState = props.serverSorting.sortBy
-          ? [{ id: props.serverSorting.sortBy, desc: props.serverSorting.sortOrder === 'desc' }]
-          : []
+        const currentSorting: SortingState = props.serverSorting.orderBy.map(s => ({
+          id: s.field,
+          desc: s.order === 'desc',
+        }))
         const newSorting = typeof updaterOrValue === 'function'
           ? updaterOrValue(currentSorting)
           : updaterOrValue
@@ -81,14 +84,13 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
         // 同步本地 ref（表头图标需要）
         sorting.value = newSorting
 
-        // 通知父组件发起请求
-        const sort = newSorting[0]
-        if (sort) {
-          props.serverSorting.onSortingChange(sort.id, sort.desc ? 'desc' : 'asc')
-        }
-        else {
-          props.serverSorting.onSortingChange('', 'asc')
-        }
+        // 转换为 orderBy 数组，通知父组件发起请求
+        props.serverSorting.onSortingChange(
+          newSorting.map(s => ({
+            field: s.id,
+            order: s.desc ? 'desc' : 'asc',
+          })),
+        )
       }
       else {
         valueUpdater(updaterOrValue, sorting)

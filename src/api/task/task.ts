@@ -22,14 +22,13 @@ export async function fetchTasks(params: TaskListParams): Promise<TaskPageRespon
   const rawResponse = await apiFetch('/tasks', {
     method: 'POST',
     body: {
-      page: validParams.page,
+      pageNum: validParams.pageNum,
       pageSize: validParams.pageSize,
       keyword: validParams.keyword,
       status: validParams.status,
       priority: validParams.priority,
       assignee: validParams.assignee,
-      sortBy: validParams.sortBy,
-      sortOrder: validParams.sortOrder,
+      orderBy: validParams.orderBy,
     },
   })
 

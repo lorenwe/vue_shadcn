@@ -15,9 +15,8 @@ export interface ServerPagination {
 }
 
 export interface ServerSorting {
-  sortBy: string
-  sortOrder: 'asc' | 'desc'
-  onSortingChange: (sortBy: string, sortOrder: 'asc' | 'desc') => void
+  orderBy: Array<{ field: string, order: 'asc' | 'desc' }>
+  onSortingChange: (orderBy: Array<{ field: string, order: 'asc' | 'desc' }>) => void
 }
 
 export interface DataTableProps<T> {
