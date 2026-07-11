@@ -131,6 +131,7 @@ declare module 'vue' {
     UiPopoverAnchor: typeof import('./../components/ui/popover/PopoverAnchor.vue')['default']
     UiPopoverContent: typeof import('./../components/ui/popover/PopoverContent.vue')['default']
     UiPopoverTrigger: typeof import('./../components/ui/popover/PopoverTrigger.vue')['default']
+    UiProgress: typeof import('./../components/ui/progress/Progress.vue')['default']
     UiSelect: typeof import('./../components/ui/select/Select.vue')['default']
     UiSelectContent: typeof import('./../components/ui/select/SelectContent.vue')['default']
     UiSelectGroup: typeof import('./../components/ui/select/SelectGroup.vue')['default']

@@ -1,6 +1,6 @@
 import { fetchTasks } from "@/api/task/task"
 import type { TaskListParams } from "@/api/task/types"
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, keepPreviousData } from '@tanstack/vue-query'
 
 type UseTaskListQueryOptions = {
   params: Ref<TaskListParams> | TaskListParams
@@ -18,6 +18,8 @@ export function useTaskListQuery(options: UseTaskListQueryOptions) {
     queryKey: ['taskList', reactiveParams],
     queryFn: () => fetchTasks(reactiveParams.value),
     enabled: reactiveEnabled,
+    // 请求期间保留上一次数据，避免列表闪烁
+    placeholderData: keepPreviousData,
   })
 
   return { isPending, isError, isFetching, data, error }
