@@ -39,11 +39,26 @@ watch(sorting, (newSorting) => {
 
 const rowSelection = ref({})
 
-const { data } = useTaskListQuery({
+const { data, isFetching } = useTaskListQuery({
   params: searchParams,
 })
 
 const taskList = computed(() => data.value?.list ?? [])
+const total = computed(() => data.value?.total ?? 0)
+
+// 分页
+const totalPages = computed(() => Math.ceil(total.value / searchParams.value.pageSize))
+
+function goToPage(page: number) {
+  searchParams.value.pageNum = page
+  rowSelection.value = {}
+}
+
+function setPageSize(size: number) {
+  searchParams.value.pageSize = size
+  searchParams.value.pageNum = 1
+  rowSelection.value = {}
+}
 
 // 选中的行数据
 const selectedRows = computed(() => {
@@ -74,6 +89,7 @@ const table = useVueTable<Task>({
   enableMultiSort: true,  // 开启多列排序
   isMultiSortEvent: () => true, // 多列排序不需要按住shift按键
   manualSorting: true, // 服务端排序，数据已排好序
+  manualPagination: true // 服务端分页
 })
 </script>
 
@@ -83,6 +99,7 @@ const table = useVueTable<Task>({
       :data="taskList"
       :columns="columns"
       :table="table"
+      :is-loading="isFetching"
     >
       <template #toolbar>
         <div class="flex items-center gap-2">
@@ -108,5 +125,49 @@ const table = useVueTable<Task>({
         </div>
       </template>
     </DataTable>
+
+    <!-- 分页 -->
+    <div class="flex items-center justify-between py-4">
+      <span class="text-sm text-muted-foreground">
+        共 {{ total }} 条
+      </span>
+      <div class="flex items-center gap-4">
+        <!-- 每页条数 -->
+        <div class="flex items-center gap-2 text-sm">
+          <span>每页</span>
+          <select
+            class="border rounded px-2 py-1"
+            :value="searchParams.pageSize"
+            @change="setPageSize(Number(($event.target as HTMLSelectElement).value))"
+          >
+            <option v-for="size in [10, 20, 50, 100]" :key="size" :value="size">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+        <!-- 翻页 -->
+        <div class="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            :disabled="searchParams.pageNum <= 1"
+            @click="goToPage(searchParams.pageNum - 1)"
+          >
+            上一页
+          </Button>
+          <span class="mx-2 text-sm">
+            {{ searchParams.pageNum }} / {{ totalPages || 1 }}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            :disabled="searchParams.pageNum >= totalPages"
+            @click="goToPage(searchParams.pageNum + 1)"
+          >
+            下一页
+          </Button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
