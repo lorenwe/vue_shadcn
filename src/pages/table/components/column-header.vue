@@ -48,11 +48,11 @@ export default {
 
       <UiDropdownMenuContent align="start">
         <template v-if="canSorted">
-          <UiDropdownMenuItem @click="props.column.toggleSorting(false, true)">
+          <UiDropdownMenuItem @click="props.column.toggleSorting(false)">
             <ArrowUpIcon class="mr-2 size-4 text-muted-foreground/70" />
             Asc
           </UiDropdownMenuItem>
-          <UiDropdownMenuItem @click="props.column.toggleSorting(true, true)">
+          <UiDropdownMenuItem @click="props.column.toggleSorting(true)">
             <ArrowDownIcon class="mr-2 size-4 text-muted-foreground/70" />
             Desc
           </UiDropdownMenuItem>

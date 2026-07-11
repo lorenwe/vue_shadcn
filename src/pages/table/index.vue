@@ -50,15 +50,15 @@ const tableConfig: TableOptionsWithReactiveData<Task> = {
       },
     },
     onSortingChange: (updaterOrValue) => {
+      console.log("onSortingChange", updaterOrValue, sorting)
       valueUpdater(updaterOrValue, sorting)
     },
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    enableSorting: true,
     enableMultiSort: true,
-    isMultiSortEvent: (e) => true,
-    debugTable: true,
+    // 关键：永远触发多列追加排序，不用 Shift/Ctrl
+    isMultiSortEvent: () => true,
   }
 const table = useVueTable<Task>(tableConfig)
 

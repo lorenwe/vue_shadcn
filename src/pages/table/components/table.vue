@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import type { Column, Table as VueTable } from '@tanstack/vue-table'
+import type { Table as VueTable } from '@tanstack/vue-table'
 import { FlexRender } from '@tanstack/vue-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import type { DataTableProps } from './types'
