@@ -31,7 +31,11 @@ const routeMap: RouteMapping[] = [
     paramName: 'id',
     meta: { title: '用户详情' }
   },
-  
+  { 
+    path: '/table', 
+    component: () => import('@/pages/table/index.vue'),
+    meta: { title: '表格实例' }
+  },
   // ===== 任务管理 =====
   { 
     path: '/task', 

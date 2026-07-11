@@ -126,6 +126,9 @@ export function useGenerateVueTable<T>(props: DataTableProps<T>) {
 
   if (useServerSorting) {
     tableConfig.manualSorting = true
+    // 多列排序：普通点击累积，不移除已有排序
+    tableConfig.isMultiSortEvent = () => true
+    tableConfig.enableMultiSort = true
   }
 
   const table = useVueTable<T>(tableConfig)
