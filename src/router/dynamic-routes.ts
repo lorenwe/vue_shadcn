@@ -36,6 +36,11 @@ const routeMap: RouteMapping[] = [
     component: () => import('@/pages/table/index.vue'),
     meta: { title: '表格实例' }
   },
+  { 
+    path: '/tableTree', 
+    component: () => import('@/pages/table-tree/index.vue'),
+    meta: { title: '树形表格' }
+  },
   // ===== 任务管理 =====
   { 
     path: '/task', 
