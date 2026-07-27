@@ -19,7 +19,8 @@ function getRowClasses(row: Row<T>): string {
   const depth = row.depth
   if (depth === 0) return ''
   return cn(
-    'border-l-2 border-muted',
+    // box-shadow inset 替代 border-l-2，不占盒模型空间，展开收起不会抖动
+    'shadow-[inset_2px_0_0_hsl(var(--border))]',
     depth > 1 && 'bg-muted/20',
   )
 }

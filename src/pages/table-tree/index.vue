@@ -65,8 +65,9 @@ const columns = [
   }),
   columnHelper.accessor('title', {
     header: '菜单名称',
-    size: 9999,
-    minSize: 120,
+    size: 280,
+    minSize: 160,
+    maxSize: 400,
     cell: ({ row }) => {
       const canExpand = row.getCanExpand()
       const isExpanded = row.getIsExpanded()
@@ -92,9 +93,8 @@ const columns = [
   }),
   columnHelper.accessor('url', {
     header: '路由地址',
-    size: 400,
-    minSize: 120,
-    maxSize: 400,
+    size: 9999,
+    minSize: 100,
     cell: ({ row }) => {
       const url = row.getValue('url')
       if (!url) {
@@ -161,6 +161,7 @@ const table = useVueTable({
     },
   },
   columns,
+  getRowId: (row) => row.id,
   getSubRows: (row) => row.subRows,
   getRowCanExpand: (row) => !!(row.subRows && row.subRows.length > 0),
   getCoreRowModel: getCoreRowModel(),
