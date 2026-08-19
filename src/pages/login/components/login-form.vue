@@ -35,8 +35,8 @@ const route = useRoute()
 const { t } = useI18n()
 const authStore = useAuthStore()
 
-const email = ref('123@123.com')
-const password = ref('123')
+const username = ref('admin')
+const password = ref('123456')
 const isLoading = ref(false)
 
 // 字段级错误：每个字段可以有多条消息
@@ -70,11 +70,11 @@ function clearFieldError(field: string) {
 }
 
 /** 校验单个字段（失焦用） */
-function validateField(field: 'email' | 'password') {
+function validateField(field: 'username' | 'password') {
   if (!hasSubmitted.value) return
 
   const result = LoginRequestSchema.safeParse({
-    email: email.value,
+    username: username.value,
     password: password.value,
   })
 
@@ -103,7 +103,7 @@ async function handleSubmit() {
   fieldErrors.value = {}
 
   const result = LoginRequestSchema.safeParse({
-    email: email.value,
+    username: username.value,
     password: password.value,
   })
 
@@ -120,7 +120,7 @@ async function handleSubmit() {
 
   isLoading.value = true
   try {
-    await authStore.login(result.data.email, result.data.password)
+    await authStore.login(result.data.username, result.data.password)
     // 加载远程多语言数据
     toast.success(t('login.success'), { description: t('login.welcome') })
     // 拉取远程语言包，逐个 locale 安全合并
@@ -130,6 +130,7 @@ async function handleSubmit() {
     const redirect = (route.query.redirect as string) || '/'
     await router.push(redirect)
   } catch (error: any) {
+    console.log(error)
     const message = error?.data?.message || error?.message || t('login.checkCredentials')
     formError.value = message
     toast.error(t('login.failed'), { description: message })
@@ -152,7 +153,7 @@ async function handleSubmit() {
         <form @submit.prevent="handleSubmit" novalidate>
           <FieldGroup>
             <!-- 邮箱 -->
-            <Field :data-invalid="hasSubmitted && !!fieldErrors.email?.length">
+            <!-- <Field :data-invalid="hasSubmitted && !!fieldErrors.email?.length">
               <FieldLabel for="email">{{ t('login.email') }}</FieldLabel>
               <Input
                 id="email"
@@ -165,6 +166,21 @@ async function handleSubmit() {
                 @input="clearFieldError('email')"
               />
               <FieldError v-if="fieldErrors.email?.length" :errors="fieldErrors.email" />
+            </Field> -->
+            <!-- 用户名 -->
+            <Field :data-invalid="hasSubmitted && !!fieldErrors.email?.length">
+              <FieldLabel for="username">{{ t('login.username') }}</FieldLabel>
+              <Input
+                id="username"
+                v-model="username"
+                type="username"
+                placeholder="t('login.emailPlaceholder')"
+                :disabled="isLoading"
+                required
+                @blur="validateField('username')"
+                @input="clearFieldError('username')"
+              />
+              <FieldError v-if="fieldErrors.username?.length" :errors="fieldErrors.username" />
             </Field>
 
             <!-- 密码 -->

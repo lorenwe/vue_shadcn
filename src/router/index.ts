@@ -15,7 +15,7 @@ const staticRoutes: RouteRecordRaw[] = [
     path: '/login',
     name: 'Login',
     meta: { layout: true }, // 不需要布局
-    component: () => import('@/pages/login.vue')
+    component: () => import('@/pages/login/index.vue')
   },
 //   {
 //     path: '/:pathMatch(.*)*',

@@ -1,6 +1,6 @@
-<script lang="ts">
+<script setup lang="ts">
 import { useColorMode } from '@vueuse/core'
-import LoginForm from "@/components/login-form.vue"
+import LoginForm from "./components/login-form.vue"
 
 // 执行初始化：读取缓存 + 给 html 挂载 dark 类，主题立即生效
 useColorMode()

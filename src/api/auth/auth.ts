@@ -19,7 +19,7 @@ export async function loginApi(data: LoginRequest): Promise<LoginResponse> {
 
   // 响应结构 + 业务状态码一把校验
   const parsed = ApiResponseSchema(LoginResponseSchema).parse(res)
-  if (parsed.code !== 0) {
+  if (parsed.code !== 200) {
     throw new Error(parsed.message || '登录失败')
   }
   return parsed.data
@@ -35,7 +35,7 @@ export async function logoutApi(): Promise<void> {
   })
 
   const parsed = ApiResponseSchema(z.null()).parse(res)
-  if (parsed.code !== 0) {
+  if (parsed.code !== 200) {
     throw new Error(parsed.message || '登出失败')
   }
 }

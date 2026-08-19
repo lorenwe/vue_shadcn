@@ -12,10 +12,10 @@ export const useAuthStore = defineStore('user', () => {
   /**
    * 用户登录
    */
-  async function login(email: string, password: string) {
-    const res = await loginApi({ email, password })
+  async function login(username: string, password: string) {
+    const res = await loginApi({ username, password })
     token.value = res.token
-    userInfo.value = res.user
+    // userInfo.value = res.user
   }
 
   /**

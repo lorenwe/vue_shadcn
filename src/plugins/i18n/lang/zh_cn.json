@@ -1,6 +1,7 @@
 {
   "login": "登录",
   "email": "邮箱",
+  "username": "用户名",
   "password": "密码",
   "download": "下载",
   "logout": "退出",
@@ -8,6 +9,7 @@
   "register": "注册",
   "login.title": "登录您的账户",
   "login.description": "请在下方输入您的电子邮件以登录您的账户",
+  "login.username": "用户名",
   "login.email": "邮箱",
   "login.emailPlaceholder": "m@example.com",
   "login.password": "密码",

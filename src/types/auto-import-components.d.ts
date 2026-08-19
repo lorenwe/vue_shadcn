@@ -44,7 +44,6 @@ declare module 'vue' {
     InputForm: typeof import('./../components/input-form.vue')['default']
     LanguageChange: typeof import('./../components/language-change.vue')['default']
     Loading: typeof import('./../components/loading.vue')['default']
-    LoginForm: typeof import('./../components/login-form.vue')['default']
     MainLayoutBasicHeader: typeof import('./../components/main-layout/basic-header.vue')['default']
     MainLayoutBasicPage: typeof import('./../components/main-layout/basic-page.vue')['default']
     NoResultFound: typeof import('./../components/no-result-found.vue')['default']

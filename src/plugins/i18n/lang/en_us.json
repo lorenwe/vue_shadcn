@@ -1,6 +1,7 @@
 {
   "login": "Login",
   "email": "Email",
+  "username": "User Name",
   "password": "Password",
   "download": "Download",
   "logout": "Log out",
@@ -8,6 +9,7 @@
   "register": "Register",
   "login.title": "Login to your account",
   "login.description": "Enter your email below to login to your account",
+  "login.username": "用户名",
   "login.email": "Email",
   "login.emailPlaceholder": "m@example.com",
   "login.password": "Password",
