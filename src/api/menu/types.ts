@@ -41,6 +41,7 @@ export const MenuItemSchema2: z.ZodType<{
   menu_id: number
   parent_id: number
   name: string
+  name_tree: string
   icon?: string
   permission: string
   children?: z.infer<typeof MenuItemSchema2>[]
@@ -51,6 +52,7 @@ export const MenuItemSchema2: z.ZodType<{
   menu_id: z.number(),
   parent_id: z.number(),
   name: z.string(),
+  name_tree: z.string(),
   icon: z.string().optional(),
   permission: z.string(),
   // meta: z.record(z.string(), z.any()).optional(),  // 任意键值对

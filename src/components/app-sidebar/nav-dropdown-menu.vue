@@ -4,10 +4,11 @@ import MenuButton from './menu-button.vue'
 import type { MenuItem } from './types'
 import { isExternalUrl } from '@/utils/is-external-url'
 import { useRoute } from 'vue-router'
-
+import { useI18n } from 'vue-i18n'
 const { menuItem } = defineProps<{
   menuItem: MenuItem
 }>()
+const { t } = useI18n()
 const route = useRoute()
 function isActive(menu: MenuItem): boolean {
   const pathname = route.path
@@ -24,7 +25,7 @@ function isActive(menu: MenuItem): boolean {
     <UiSidebarMenuItem v-if="!menuItem.items">
         <MenuButton
             :is-active="isActive(menuItem)"
-            :tooltip="menuItem.title"
+            :tooltip="t('menu.' + menuItem.title)"
             :is-external-url="isExternalUrl(menuItem.url)"
             :menu="menuItem"
         />
@@ -32,13 +33,13 @@ function isActive(menu: MenuItem): boolean {
     <!-- 有子节点：可折叠 -->
     <UiDropdownMenu v-else>
         <UiDropdownMenuTrigger as-child>
-            <UiSidebarMenuButton :tooltip="menuItem.title">
+            <UiSidebarMenuButton :tooltip="t('menu.' + menuItem.title)">
             <component :is="menuItem.icon" v-if="menuItem.icon" />
-            <span>{{ menuItem.title }}</span>
+            <span>{{ t("menu." + menuItem.title) }}</span>
             </UiSidebarMenuButton>
         </UiDropdownMenuTrigger>
         <UiDropdownMenuContent align="start" side="right">
-            <UiDropdownMenuLabel>{{ menuItem.title }}</UiDropdownMenuLabel>
+            <UiDropdownMenuLabel>{{ t("menu." + menuItem.title) }}</UiDropdownMenuLabel>
             <UiDropdownMenuSeparator />
             <UiDropdownMenuItem v-for="subItem in menuItem.items" :key="subItem.title" as-child>
                 <NavDropdownMenu :menu-item="subItem" />

@@ -5,11 +5,13 @@ import { isExternalUrl } from '@/utils/is-external-url'
 import type { MenuItem } from './types'
 import MenuButton from './menu-button.vue'
 import NavTeamRecursive from '@/components/app-sidebar/nav-team-recursive.vue'
+import { useI18n } from 'vue-i18n'
 
 const { menuItem } = defineProps<{
   menuItem: MenuItem
 }>()
 
+const { t } = useI18n()
 const route = useRoute()
 const initialPath = route.path
 
@@ -34,7 +36,7 @@ function isCollapsed(menu: MenuItem): boolean {
   <UiSidebarMenuItem v-if="!menuItem.items">
       <MenuButton
           :is-active="isActive(menuItem)"
-          :tooltip="menuItem.title"
+          :tooltip="t('menu.' + menuItem.title)"
           :is-external-url="isExternalUrl(menuItem.url)"
           :menu="menuItem"
       />
@@ -46,7 +48,7 @@ function isCollapsed(menu: MenuItem): boolean {
               <UiCollapsibleTrigger as-child>
                   <UiSidebarMenuButton :tooltip="menuItem.title">
                       <component :is="menuItem.icon" v-if="menuItem.icon" />
-                      <span>{{ menuItem.title }}</span>
+                      <span>{{ t("menu." + menuItem.title) }}</span>
                       <ChevronRightIcon class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </UiSidebarMenuButton>
               </UiCollapsibleTrigger>

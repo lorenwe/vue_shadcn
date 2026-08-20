@@ -31,7 +31,7 @@ export const teams: Team[] = [
  */
 function toSidebarMenuItem(item: ApiMenuItem): MenuItem {
   return {
-    title: item.name,
+    title: item.name_tree,
     url: item.path,
     icon: item.icon ? resolveIcon(item.icon) as NavIcon : undefined,
     items: item.children?.map(toSidebarMenuItem),
