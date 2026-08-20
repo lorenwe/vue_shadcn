@@ -1,8 +1,20 @@
 import z from 'zod'
+import { toast } from 'vue-sonner'
 
 import { ApiEnvelopeSchema } from '@/types/api'
 import pinia from '@/plugins/pinia/setup'
 import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
+
+/**
+ * 登录失效错误：区别于普通业务错误，调用方无需重复提示
+ */
+export class LoginExpiredError extends Error {
+  constructor(message = '登录已失效，请重新登录') {
+    super(message)
+    this.name = 'LoginExpiredError'
+  }
+}
 
 /**
  * 统一响应解析选项
@@ -47,7 +59,7 @@ export function parseApiResponse<T extends z.ZodTypeAny>(
   // 登录失效判断：业务码 401 且非登录接口本身
   if (code === 401 && !options.isLoginRequest) {
     handleLoginExpired()
-    throw new Error(message || '登录已失效，请重新登录')
+    throw new LoginExpiredError(message)
   }
 
   // 业务码判断
@@ -68,12 +80,18 @@ export function parseApiResponse<T extends z.ZodTypeAny>(
 }
 
 /**
- * 登录失效处理：清除本地登录态并跳转登录页
+ * 登录失效处理：提示用户、清除本地登录态并跳转登录页
  */
 function handleLoginExpired() {
   const authStore = useAuthStore(pinia)
   authStore.clearLocal()
-  if (window.location.pathname !== '/login') {
-    window.location.href = '/login'
+
+  toast.error('登录已失效，请重新登录')
+
+  if (router.currentRoute.value.path !== '/login') {
+    router.replace({
+      path: '/login',
+      query: { redirect: router.currentRoute.value.fullPath },
+    })
   }
 }
