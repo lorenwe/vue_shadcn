@@ -1,6 +1,7 @@
 import type { Router } from 'vue-router'
 
 import pinia from '@/plugins/pinia/setup'
+import { useAuthStore } from '@/stores/auth'
 import { useMenuStore } from '@/stores/menu'
 
 import { useGuardContext } from './guard-context'
@@ -17,8 +18,15 @@ export function setupMenuGuard(router: Router) {
 
     // 已登录 + 菜单未加载 → 加载后重定向一次，让 Vue Router 重新匹配
     if (isLogin.value && !menuStore.isLoaded) {
-      await menuStore.fetchMenu(router)
-      return to.fullPath
+      const ok = await menuStore.fetchMenu(router)
+      // 装载成功才重新匹配动态路由；失败则清除登录态并跳转登录页，
+      // 否则 isLoaded 一直是 false，配合 return to.fullPath 会反复重试接口造成死循环
+      if (ok) {
+        return to.fullPath
+      }
+      const authStore = useAuthStore(pinia)
+      authStore.clearLocal()
+      return { path: '/login', replace: true }
     }
 
     // 未登录 + 前往登录页 → 清除动态路由

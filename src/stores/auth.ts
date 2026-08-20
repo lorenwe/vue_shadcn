@@ -19,6 +19,15 @@ export const useAuthStore = defineStore('user', () => {
   }
 
   /**
+   * 仅清除本地登录态（不调用登出接口）
+   * 用于 token 失效
+   */
+  function clearLocal() {
+    token.value = ''
+    userInfo.value = null
+  }
+
+  /**
    * 用户登出
    */
   async function logout() {
@@ -27,8 +36,7 @@ export const useAuthStore = defineStore('user', () => {
     } catch {
       // 即使登出接口失败，也清除本地状态
     } finally {
-      token.value = ''
-      userInfo.value = null
+      clearLocal()
     }
   }
 
@@ -38,6 +46,7 @@ export const useAuthStore = defineStore('user', () => {
     isLogin,
     login,
     logout,
+    clearLocal,
   }
 }, {
   persist: {

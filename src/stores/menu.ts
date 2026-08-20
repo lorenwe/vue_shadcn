@@ -13,9 +13,11 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 从服务端获取菜单，并动态注册路由（含布局包裹）
+   * @returns 是否装载成功（供守卫判断是否继续重定向匹配，失败时避免反复重试）
    */
-  async function fetchMenu(router: Router) {
-    if (isLoaded.value || isLoading.value) return
+  async function fetchMenu(router: Router): Promise<boolean> {
+    if (isLoaded.value) return true
+    if (isLoading.value) return false
 
     isLoading.value = true
     error.value = null
@@ -24,9 +26,11 @@ export const useMenuStore = defineStore('menu', () => {
       menuItems.value = data
       registerDynamicRoutes(router, data)
       isLoaded.value = true
+      return true
     } catch (e: any) {
       error.value = e?.message || '装载动态路由失败'
       console.error('[MenuStore] 装载动态路由失败:', e)
+      return false
     } finally {
       isLoading.value = false
     }
