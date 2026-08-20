@@ -1,5 +1,5 @@
 import { useApiFetch } from '@/composables/use-fetch'
-import { ApiResponseSchema } from '@/types/api'
+import { ApiEnvelopeSchema } from '@/types/api'
 import { LanguagePackSchema } from './types'
 import type { LanguagePack } from './types'
 
@@ -12,9 +12,12 @@ export async function fetchLanguagePack(): Promise<LanguagePack> {
     method: 'POST',
   })
 
-  const parsed = ApiResponseSchema(LanguagePackSchema).parse(res)
-  if (parsed.code !== 200) {
-    throw new Error(parsed.message || '获取语言包失败')
+  // 第一步解析外层信封
+  const envelope = ApiEnvelopeSchema.parse(res)
+  if (envelope.code !== 200) {
+    throw new Error(envelope.message || '获取语言包失败')
   }
-  return parsed.data
+  // 第二步验证数据结构正确性
+  const parsed = LanguagePackSchema.parse(envelope.data)
+  return parsed
 }

@@ -35,10 +35,10 @@ export function useI18nLoader() {
           console.warn(`[i18n] ${lang} 消息编译失败，使用内置兜底`)
         }
       }
+      console.log(`[i18n] 加载远程多语言包成功`)
     } catch (err) {
       console.error('加载语言包失败', err)
     }
-    console.log(`[i18n] 加载远程多语言包成功`)
   }
 
   // 切换语言

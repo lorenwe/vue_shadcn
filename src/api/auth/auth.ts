@@ -1,6 +1,6 @@
 import z from 'zod'
 import { useApiFetch } from '@/composables/use-fetch'
-import { ApiResponseSchema } from '@/types/api'
+import { ApiResponseSchema, ApiEnvelopeSchema } from '@/types/api'
 import { LoginRequestSchema, LoginResponseSchema } from '@/validators/auth.validator'
 import type { LoginRequest, LoginResponse } from './types'
 
@@ -17,12 +17,15 @@ export async function loginApi(data: LoginRequest): Promise<LoginResponse> {
     body,
   })
 
-  // 响应结构 + 业务状态码一把校验
-  const parsed = ApiResponseSchema(LoginResponseSchema).parse(res)
-  if (parsed.code !== 200) {
-    throw new Error(parsed.message || '登录失败')
+  // 第一步解析外层信封
+  const envelope = ApiEnvelopeSchema.parse(res)
+  if (envelope.code !== 200) {
+    throw new Error(envelope.message || '登录失败')
   }
-  return parsed.data
+
+  // 第二步解析数据结构
+  const parsed = LoginResponseSchema.parse(envelope.data)
+  return parsed
 }
 
 /**
@@ -34,8 +37,9 @@ export async function logoutApi(): Promise<void> {
     method: 'POST',
   })
 
-  const parsed = ApiResponseSchema(z.null()).parse(res)
-  if (parsed.code !== 200) {
-    throw new Error(parsed.message || '登出失败')
+  // 第一步解析外层信封
+  const envelope = ApiEnvelopeSchema.parse(res)
+  if (envelope.code !== 200) {
+    throw new Error(envelope.message || '登出失败')
   }
 }
