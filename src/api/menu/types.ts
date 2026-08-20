@@ -34,3 +34,32 @@ export type MenuItem = z.infer<typeof MenuItemSchema>
  */
 export const MenuResponseSchema = z.array(MenuItemSchema)
 export type MenuResponse = z.infer<typeof MenuResponseSchema>
+
+export const MenuItemSchema2: z.ZodType<{
+  path: string
+  id: number
+  menu_id: number
+  parent_id: number
+  name: string
+  icon?: string
+  permission: string
+  children?: z.infer<typeof MenuItemSchema2>[]
+  // meta?: Record<string, any>  // 宽松的 meta 类型
+}> = z.object({
+  path: z.string(),
+  id: z.number(),
+  menu_id: z.number(),
+  parent_id: z.number(),
+  name: z.string(),
+  icon: z.string().optional(),
+  permission: z.string(),
+  // meta: z.record(z.string(), z.any()).optional(),  // 任意键值对
+  children: z.lazy(() => MenuItemSchema2.array().optional()),
+})
+export type MenuItem2 = z.infer<typeof MenuItemSchema2>
+
+/**
+ * 服务端返回的完整菜单数据 = 菜单项数组
+ */
+export const MenuResponseSchema2 = z.array(MenuItemSchema2)
+export type MenuResponse2 = z.infer<typeof MenuResponseSchema2>

@@ -1,17 +1,17 @@
 import { useApiFetch } from '@/composables/use-fetch'
 import { ApiResponseSchema } from '@/types/api'
-import { MenuResponseSchema } from './types'
-import type { MenuResponse } from './types'
+import { MenuResponseSchema2 } from './types'
+import type { MenuResponse2 } from './types'
 
 /**
  * 从服务端获取菜单数据
  */
-export async function fetchMenuApi(): Promise<MenuResponse> {
+export async function fetchMenuApi(): Promise<MenuResponse2> {
   const { apiFetch } = useApiFetch()
-  const res = await apiFetch('/menu/tree', { method: 'POST' })
+  const res = await apiFetch('/admin/user/menu', { method: 'POST' })
 
-  const parsed = ApiResponseSchema(MenuResponseSchema).parse(res)
-  if (parsed.code !== 0) {
+  const parsed = ApiResponseSchema(MenuResponseSchema2).parse(res)
+  if (parsed.code !== 200) {
     throw new Error(parsed.message || '获取菜单失败')
   }
   return parsed.data

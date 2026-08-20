@@ -1,7 +1,7 @@
 // router/dynamic-routes.ts
 import type { Router, RouteRecordRaw } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
-import type { MenuItem } from '@/api/menu/types'
+import type { MenuItem2 } from '@/api/menu/types'
 
 // ===== 1. 路由映射表（手动维护） =====
 interface RouteMapping {
@@ -71,13 +71,13 @@ const routeMap: RouteMapping[] = [
 ]
 
 // ===== 2. 构建快速查找索引 =====
-const pathMap = new Map<string, RouteMapping>()
-const dynamicPathMap = new Map<string, RouteMapping[]>()
+const pathMap = new Map<string, RouteMapping>() // 静态路由
+const dynamicPathMap = new Map<string, RouteMapping[]>() // 参数路由
 
 // 构建索引
 for (const mapping of routeMap) {
   if (mapping.dynamic) {
-    // 动态路由：按前缀分组
+    // 参数路由：按前缀分组
     const prefix = mapping.path.replace(/\/:[^/]+$/, '')
     if (!dynamicPathMap.has(prefix)) {
       dynamicPathMap.set(prefix, [])
@@ -129,32 +129,32 @@ function getComponent(path: string): () => Promise<any> {
 }
 
 // ===== 5. 注册动态路由 =====
-export function registerDynamicRoutes(router: Router, items: MenuItem[]) {
+export function registerDynamicRoutes(router: Router, items: MenuItem2[]) {
   const routeConfigs: RouteRecordRaw[] = []
 
-  function collectRoutes(list: MenuItem[], parentPath = '') {
+  function collectRoutes(list: MenuItem2[], parentPath = '') {
     for (const item of list) {
-      const fullPath = item.url 
-        ? (item.url.startsWith('/') ? item.url : `${parentPath}/${item.url}`)
+      const fullPath = item.path 
+        ? (item.path.startsWith('/') ? item.path : `${parentPath}/${item.path}`)
         : parentPath || '/'
       
       // 标准化路径
       const normalizedPath = fullPath.replace(/\/+/g, '/')
       
-      if (item.items && item.items.length > 0) {
+      if (item.children && item.children.length > 0) {
         // 有子菜单，继续递归
-        collectRoutes(item.items, normalizedPath)
+        collectRoutes(item.children, normalizedPath)
       } else {
         // 叶子节点，注册为路由
         const component = getComponent(normalizedPath)
         
         routeConfigs.push({
           path: normalizedPath,
-          name: item.title,
+          name: item.name,
           component: component,
           meta: { 
             auth: true, 
-            title: item.title,
+            title: item.name,
             originalPath: normalizedPath,
           },
         })
@@ -204,13 +204,13 @@ export function generateRoutePath(
   return path
 }
 
-export function clearDynamicRoutes(router: Router, item: MenuItem) {
-  if (item.items) {
-    for (const child of item.items) {
+export function clearDynamicRoutes(router: Router, item: MenuItem2) {
+  if (item.children) {
+    for (const child of item.children) {
       clearDynamicRoutes(router, child)
     }
   } else {
-    router.removeRoute(item.title)
+    router.removeRoute(item.name)
   }
 }
 

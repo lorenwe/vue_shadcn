@@ -3,7 +3,7 @@ import { AudioWaveformIcon, CommandIcon, GalleryVerticalEndIcon } from '@lucide/
 import pinia from '@/plugins/pinia/setup'
 import { useMenuStore } from '@/stores/menu'
 import { resolveIcon } from '@/utils/resolve-icon'
-import type { MenuItem as ApiMenuItem } from '@/api/menu/types'
+import type { MenuItem2 as ApiMenuItem } from '@/api/menu/types'
 
 import type { MenuItem, NavIcon, Team } from '../types'
 
@@ -31,10 +31,10 @@ export const teams: Team[] = [
  */
 function toSidebarMenuItem(item: ApiMenuItem): MenuItem {
   return {
-    title: item.title,
-    url: item.url,
+    title: item.name,
+    url: item.path,
     icon: item.icon ? resolveIcon(item.icon) as NavIcon : undefined,
-    items: item.items?.map(toSidebarMenuItem),
+    items: item.children?.map(toSidebarMenuItem),
   }
 }
 

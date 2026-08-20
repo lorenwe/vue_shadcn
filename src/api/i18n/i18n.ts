@@ -8,12 +8,12 @@ import type { LanguagePack } from './types'
  */
 export async function fetchLanguagePack(): Promise<LanguagePack> {
   const { apiFetch } = useApiFetch()
-  const res = await apiFetch('/i18n/pack', {
+  const res = await apiFetch('/language/allLocales', {
     method: 'POST',
   })
 
   const parsed = ApiResponseSchema(LanguagePackSchema).parse(res)
-  if (parsed.code !== 0) {
+  if (parsed.code !== 200) {
     throw new Error(parsed.message || '获取语言包失败')
   }
   return parsed.data
