@@ -1,6 +1,7 @@
 import { useApiFetch } from '@/composables/use-fetch'
+import { parseApiResponse } from '@/api/response'
 import { TaskListParamsSchema, type TaskListParams } from './types'
-import { ApiResponseSchema, type PageResponse } from '@/types/api'
+import type { PageResponse } from '@/types/api'
 import { TaskPageResponseSchema, type Task } from '@/validators/task.validator'
 
 type TaskPageResponse  = PageResponse<Task>
@@ -32,22 +33,11 @@ export async function fetchTasks(params: TaskListParams): Promise<TaskPageRespon
     },
   })
 
-  // 3. 校验后端统一外层包装 + 内部分页数据
-  const fullSchema = ApiResponseSchema(TaskPageResponseSchema)
-  const parseResult = fullSchema.safeParse(rawResponse)
-  if (!parseResult.success) {
-    console.error('接口返回数据格式错误', parseResult.error.issues)
-    throw new Error('服务端返回数据异常')
-  }
-
-  const parsed = parseResult.data
-  // 业务状态码判断
-  if (parsed.code !== 0) {
-    throw new Error(parsed.message || '获取任务列表失败')
-  }
-
-  // 返回分页数据
-  return parsed.data
+  // 3. 两步验证 + 登录失效判断统一在 parseApiResponse 中处理
+  return parseApiResponse(rawResponse, TaskPageResponseSchema, {
+    successCode: 0,
+    errorMessage: '获取任务列表失败',
+  })
 }
 
 // /**

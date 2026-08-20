@@ -1,6 +1,5 @@
-import z from 'zod'
 import { useApiFetch } from '@/composables/use-fetch'
-import { ApiResponseSchema, ApiEnvelopeSchema } from '@/types/api'
+import { parseApiResponse } from '@/api/response'
 import { LoginRequestSchema, LoginResponseSchema } from '@/validators/auth.validator'
 import type { LoginRequest, LoginResponse } from './types'
 
@@ -17,15 +16,8 @@ export async function loginApi(data: LoginRequest): Promise<LoginResponse> {
     body,
   })
 
-  // 第一步解析外层信封
-  const envelope = ApiEnvelopeSchema.parse(res)
-  if (envelope.code !== 200) {
-    throw new Error(envelope.message || '登录失败')
-  }
-
-  // 第二步解析数据结构
-  const parsed = LoginResponseSchema.parse(envelope.data)
-  return parsed
+  // 登录接口 code 401 表示账号密码错误，不按登录失效处理
+  return parseApiResponse(res, LoginResponseSchema, { isLoginRequest: true })
 }
 
 /**
@@ -37,9 +29,5 @@ export async function logoutApi(): Promise<void> {
     method: 'POST',
   })
 
-  // 第一步解析外层信封
-  const envelope = ApiEnvelopeSchema.parse(res)
-  if (envelope.code !== 200) {
-    throw new Error(envelope.message || '登出失败')
-  }
+  parseApiResponse(res)
 }

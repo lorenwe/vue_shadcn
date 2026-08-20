@@ -40,29 +40,6 @@ export const ApiEnvelopeSchema = z.object({
 // 推导出的类型（不需要手动定义接口）
 export type ApiEnvelope = z.infer<typeof ApiEnvelopeSchema>
 
-/**
- * 解析统一响应：先判断业务码，非成功码直接抛错（不做 data 校验），
- * 成功后才校验 data，避免错误响应因 data 缺失/结构不符而被误报成「校验错误」
- * @param res         接口原始返回
- * @param dataSchema  data 字段的校验 schema
- * @param successCode 成功业务码，默认 200
- */
-export function parseApiResponse<T extends z.ZodTypeAny>(
-  res: unknown,
-  dataSchema: T,
-  successCode = 200,
-): z.infer<T> {
-  const envelope = ApiEnvelopeSchema.safeParse(res)
-  if (!envelope.success) {
-    throw new Error('响应格式错误：无法解析 code/message')
-  }
-  const { code, message, data } = envelope.data
-  if (code !== successCode) {
-    throw new Error(message || `请求失败（code: ${code}）`)
-  }
-  return dataSchema.parse(data)
-}
-
 // 通用分页构造器
 export function pageResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
   return z.object({
