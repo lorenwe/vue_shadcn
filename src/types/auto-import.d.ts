@@ -83,6 +83,7 @@ declare global {
   const useSidebarNavigation: typeof import('../composables/use-sidebar-navigation').useSidebarNavigation
   const useSlots: typeof import('vue').useSlots
   const useSystemTheme: typeof import('../composables/use-system-theme').useSystemTheme
+  const useTabsStore: typeof import('../stores/tabs').useTabsStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useThemeStore: typeof import('../stores/theme').useThemeStore
   const watch: typeof import('vue').watch
@@ -104,4 +105,7 @@ declare global {
   // @ts-ignore
   export type { NavigationMode } from '../stores/sidebar-config'
   import('../stores/sidebar-config')
+  // @ts-ignore
+  export type { TabItem } from '../stores/tabs'
+  import('../stores/tabs')
 }

@@ -13,6 +13,8 @@ import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon } from '@lucide/vue'
 import DataTable from './components/table.vue'
 import { menuTreeData, type MenuNode } from './data'
 
+defineOptions({ name: 'TableTree' })
+
 function collectAllRows(nodes: MenuNode[]): MenuNode[] {
   const result: MenuNode[] = []
   for (const node of nodes) {

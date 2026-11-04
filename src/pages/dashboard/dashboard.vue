@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { fetchLanguagePack } from '@/api/i18n/i18n'
 import { LoginExpiredError } from '@/api/response'
 
+defineOptions({ name: 'Dashboard' })
+
 const route = useRoute()
 const pageTitle = computed(() => (route.meta.title as string) || route.path)
 

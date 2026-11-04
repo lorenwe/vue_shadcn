@@ -4,6 +4,8 @@ import type { Router } from 'vue-router'
 import { fetchMenuApi } from '@/api/menu/menu'
 import type { MenuItem2 } from '@/api/menu/types'
 import { clearDynamicRoutes, registerDynamicRoutes } from '@/router/dynamic-routes'
+import pinia from '@/plugins/pinia/setup'
+import { useTabsStore } from '@/stores/tabs'
 
 export const useMenuStore = defineStore('menu', () => {
   const menuItems = ref<MenuItem2[]>([])
@@ -47,6 +49,9 @@ export const useMenuStore = defineStore('menu', () => {
     isLoaded.value = false
     isLoading.value = false
     error.value = null
+
+    // 同步重置标签栏，避免残留上一个账号打开的标签
+    useTabsStore(pinia).reset()
   }
 
   function removeItemRoutes(router: Router, item: MenuItem2) {

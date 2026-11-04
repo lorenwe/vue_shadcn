@@ -56,10 +56,16 @@ function getComponent(path: string): () => Promise<any> {
   if (mapping) {
     return mapping.component
   }
-  
+
   // 找不到则使用通用页面
   console.warn(`[路由] 未找到 ${path} 对应的组件，使用通用页面`)
   return () => import('@/pages/generic-page.vue')
+}
+
+// ===== 4.1 获取路由 meta（含 keep-alive 组件名） =====
+function getRouteMeta(path: string): Record<string, any> {
+  const mapping = findRouteMapping(path)
+  return mapping?.meta ?? {}
 }
 
 // ===== 5. 注册动态路由 =====
@@ -81,14 +87,17 @@ export function registerDynamicRoutes(router: Router, items: MenuItem2[]) {
       } else {
         // 叶子节点，注册为路由
         const component = getComponent(normalizedPath)
-        
+        const mappingMeta = getRouteMeta(normalizedPath)
+
         routeConfigs.push({
           path: normalizedPath,
           name: item.name,
           component: component,
-          meta: { 
-            auth: true, 
+          meta: {
+            auth: true,
             title: item.name,
+            i18nKey: item.name_tree ? `menu.${item.name_tree}` : undefined,
+            cacheName: mappingMeta.cacheName,
             originalPath: normalizedPath,
           },
         })

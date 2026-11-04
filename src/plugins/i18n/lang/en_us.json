@@ -26,5 +26,9 @@
   "common.logout": "Log out",
   "common.logoutSuccess": "Logged out successfully",
   "common.logoutFailed": "Logout failed, please try again",
-  "common.language.change": "Change Language"
+  "common.language.change": "Change Language",
+  "tabs.home": "Home",
+  "tabs.closeCurrent": "Close",
+  "tabs.closeOthers": "Close Others",
+  "tabs.closeAll": "Close All"
 }

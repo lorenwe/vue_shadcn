@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ChevronDownIcon } from '@lucide/vue'
 
+defineOptions({ name: 'Table' })
+
 const searchParams = ref<TaskListParams>({
   pageNum: 1,
   pageSize: DEFAULT_PAGE_SIZE,

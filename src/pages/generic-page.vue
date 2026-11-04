@@ -5,6 +5,8 @@
  */
 import { useRoute } from 'vue-router'
 
+defineOptions({ name: 'GenericPage' })
+
 const route = useRoute()
 const pageTitle = computed(() => (route.meta.title as string) || route.path)
 </script>

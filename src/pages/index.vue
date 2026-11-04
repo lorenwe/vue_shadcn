@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+defineOptions({ name: 'Home' })
+
 const items2 = [
   {
     title: '系统管理',

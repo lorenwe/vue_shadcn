@@ -2,6 +2,9 @@
 import { BasicPage } from '@/components/main-layout'
 
 import { columns } from './components/columns'
+
+defineOptions({ name: 'Task' })
+
 import DataTable from './components/data-table.vue'
 
 import { useTaskListQuery } from '@/query/task/useTask'

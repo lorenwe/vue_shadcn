@@ -20,7 +20,7 @@ export const routeMap: RouteMapping[] = [
   {
     path: '/user',
     component: () => import('@/pages/generic-page.vue'),
-    meta: { title: '用户管理' }
+    meta: { title: '用户管理', cacheName: 'GenericPage' }
   },
   // ✅ 动态参数：/user/123 → /user/:id
   {
@@ -28,47 +28,47 @@ export const routeMap: RouteMapping[] = [
     component: () => import('@/pages/user/index.vue'),
     dynamic: true,
     paramName: 'id',
-    meta: { title: '用户详情' }
+    meta: { title: '用户详情', cacheName: 'UserDetail' }
   },
   {
     path: '/table',
     component: () => import('@/pages/table/index.vue'),
-    meta: { title: '表格实例' }
+    meta: { title: '表格实例', cacheName: 'Table' }
   },
   {
     path: '/tableTree',
     component: () => import('@/pages/table-tree/index.vue'),
-    meta: { title: '树形表格' }
+    meta: { title: '树形表格', cacheName: 'TableTree' }
   },
   // ===== 任务管理 =====
   {
     path: '/task',
     component: () => import('@/pages/tasks/index.vue'),
-    meta: { title: '任务管理' }
+    meta: { title: '任务管理', cacheName: 'Task' }
   },
   {
     path: '/task/:id',
     component: () => import('@/pages/tasks/index.vue'),
     dynamic: true,
     paramName: 'id',
-    meta: { title: '任务详情' }
+    meta: { title: '任务详情', cacheName: 'Task' }
   },
   // ===== 仪表盘 =====
   {
     path: '/dashboard',
     component: () => import('@/pages/dashboard/dashboard.vue'),
-    meta: { title: '仪表盘' }
+    meta: { title: '仪表盘', cacheName: 'Dashboard' }
   },
   // ===== 通用 =====
   {
     path: '/404',
     component: () => import('@/pages/errors/404.vue'),
-    meta: { title: '页面不存在' }
+    meta: { title: '页面不存在', cacheName: 'NotFound' }
   },
   // ===== 系统设置-菜单管理 =====
   {
     path: '/system/menu-management',
     component: () => import('@/pages/system/menu-management/index.vue'),
-    meta: { title: '菜单管理' }
+    meta: { title: '菜单管理', cacheName: 'MenuManagement' }
   }
 ]

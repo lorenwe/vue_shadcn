@@ -25,5 +25,9 @@
   "login.checkCredentials": "登录失败，请检查邮箱和密码",
   "common.logout": "退出",
   "common.logoutSuccess": "已退出登录",
-  "common.logoutFailed": "退出失败，请重试"
+  "common.logoutFailed": "退出失败，请重试",
+  "tabs.home": "首頁",
+  "tabs.closeCurrent": "關閉當前",
+  "tabs.closeOthers": "關閉其他",
+  "tabs.closeAll": "關閉所有"
 }
