@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -10,7 +9,15 @@ import {
 import { ref, h, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Button } from '@/components/ui/button'
-import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon, PlusIcon } from '@lucide/vue'
+import {
+  ChevronRightIcon,
+  ChevronsDownIcon,
+  ChevronsUpIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  PlusIcon,
+} from '@lucide/vue'
 import DataTable from './components/table.vue'
 import MenuFormSheet from './components/menu-form-sheet.vue'
 import { toMenuNodes, findMenuItemById, type MenuNode } from './data'
@@ -121,14 +128,14 @@ const columns = [
       const isExpanded = row.getIsExpanded()
       const depth = row.depth
       const typeIcon = canExpand
-        ? (isExpanded ? 'lucide:folder-open' : 'lucide:folder')
-        : 'lucide:file'
+        ? (isExpanded ? FolderOpenIcon : FolderIcon)
+        : FileIcon
       const typeIconClass = canExpand ? 'text-amber-500' : 'text-gray-400'
       return h('div', {
         class: 'flex items-center gap-2 min-w-0',
         style: { paddingLeft: `${depth * 1.5}rem` },
       }, [
-        h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` }),
+        h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` }),
         h('span', { class: canExpand ? 'font-semibold truncate' : 'font-normal truncate', }, row.getValue('title')),
       ])
     },

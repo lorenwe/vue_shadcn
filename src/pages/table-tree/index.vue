@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -9,7 +8,14 @@ import {
 } from '@tanstack/vue-table'
 import { ref, h, computed } from 'vue'
 import { Button } from '@/components/ui/button'
-import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon } from '@lucide/vue'
+import {
+  ChevronRightIcon,
+  ChevronsDownIcon,
+  ChevronsUpIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+} from '@lucide/vue'
 import DataTable from './components/table.vue'
 import { menuTreeData, type MenuNode } from './data'
 
@@ -74,10 +80,10 @@ const columns = [
       const canExpand = row.getCanExpand()
       const isExpanded = row.getIsExpanded()
       const depth = row.depth
-      let typeIcon = 'lucide:file'
+      let typeIcon = FileIcon
       let typeIconClass = 'text-gray-400'
       if (canExpand) {
-        typeIcon = isExpanded ? 'lucide:folder-open' : 'lucide:folder'
+        typeIcon = isExpanded ? FolderOpenIcon : FolderIcon
         typeIconClass = 'text-amber-500'
       }
       return h('div', {
@@ -85,8 +91,8 @@ const columns = [
         style: { paddingLeft: `${depth * 1.5}rem` },
       }, [
         canExpand
-          ? h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` })
-          : row.original.icon || h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` }),
+          ? h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` })
+          : row.original.icon || h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` }),
         h('span', {
           class: canExpand ? 'font-semibold truncate' : 'font-normal truncate',
         }, row.getValue('title')),

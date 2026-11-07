@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select'
 import type { MenuListItem } from '@/api/menu/types'
 import type { FocusOutsideEvent, PointerDownOutsideEvent } from 'reka-ui'
+import IconPicker from '@/components/icon-picker.vue'
 
 defineOptions({ name: 'MenuFormSheet' })
 
@@ -244,10 +245,8 @@ const statusOptions = [
             <div class="space-y-2">
               <Label for="menu-form-icon">图标</Label>
               <form.Field name="icon" v-slot="{ field }">
-                <Input
-                  id="menu-form-icon"
+                <IconPicker
                   :model-value="field.state.value"
-                  placeholder="icon-home-fill"
                   @update:model-value="(v) => field.handleChange(v as string)"
                 />
               </form.Field>

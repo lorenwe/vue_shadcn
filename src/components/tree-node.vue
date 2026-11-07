@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { TreeItem, TreeRoot } from 'reka-ui'
 import { ref, computed } from 'vue'
+import DynamicIcon from '@/components/dynamic-Icon.vue'
 
 // ===== 数据类型 =====
 interface TreeNode {
@@ -276,29 +276,29 @@ defineExpose({
           :disabled="item.value.disabled"
         >
           <!-- 选中：对勾 -->
-          <Icon
+          <DynamicIcon
             v-if="getNodeState(item.value.title) === 'checked'"
-            icon="lucide:check"
+            name="check"
             class="w-3 h-3 text-white"
           />
           <!-- 半选：横线 -->
-          <Icon
+          <DynamicIcon
             v-else-if="getNodeState(item.value.title) === 'half'"
-            icon="lucide:minus"
+            name="minus"
             class="w-3 h-3 text-white"
           />
         </button>
 
         <!-- 图标 -->
         <template v-if="item.hasChildren">
-          <Icon
-            :icon="isExpanded ? 'lucide:folder-open' : 'lucide:folder'"
+          <DynamicIcon
+            :name="isExpanded ? 'folder-open' : 'folder'"
             class="flex-shrink-0 h-4 w-4 text-yellow-500"
           />
         </template>
-        <Icon
+        <DynamicIcon
           v-else
-          :icon="item.value.icon || 'lucide:file'"
+          :name="item.value.icon || 'file'"
           class="flex-shrink-0 h-4 w-4 text-gray-400"
         />
 
@@ -315,7 +315,7 @@ defineExpose({
           :class="{ 'rotate-90': isExpanded }"
           @click.stop="handleToggle"
         >
-          <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+          <DynamicIcon name="chevron-right" class="w-4 h-4" />
         </button>
       </TreeItem>
     </TreeRoot>

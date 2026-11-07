@@ -58,15 +58,30 @@ function handleLocaleChange(val: AcceptableValue) {
         v-model="locale"
         @update:model-value="handleLocaleChange"
       >
+        <!-- 国旗卡片：size-4 仅用于规避下拉项的 [&_svg:not([class*='size-'])]:size-4 强制正方形规则；真实 4:3 尺寸由内联 style 控制 -->
         <UiDropdownMenuRadioItem value="en-US">
-          <Icon icon="flag:us-4x3" />
-          <!-- <IconFlagCn4x3/> -->
-           <!-- <iconFlagUs4x3 class="w-6 h-4" /> -->
+          <span class="flex h-4 w-5 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-muted ring-1 ring-inset ring-border/80">
+            <Icon icon="flag:us-4x3" class="size-4" style="width:16px;height:12px" />
+          </span>
           <span>English</span>
         </UiDropdownMenuRadioItem>
         <UiDropdownMenuRadioItem value="zh-CN">
-          <Icon icon="flag:cn-4x3" />
+          <span class="flex h-4 w-5 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-muted ring-1 ring-inset ring-border/80">
+            <Icon icon="flag:cn-4x3" class="size-4" style="width:16px;height:12px" />
+          </span>
           <span>简体中文</span>
+        </UiDropdownMenuRadioItem>
+        <UiDropdownMenuRadioItem value="zh-TW">
+          <span class="flex h-4 w-5 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-muted ring-1 ring-inset ring-border/80">
+            <Icon icon="flag:tw-4x3" class="size-4" style="width:16px;height:12px" />
+          </span>
+          <span>繁體中文</span>
+        </UiDropdownMenuRadioItem>
+        <UiDropdownMenuRadioItem value="ja-JP">
+          <span class="flex h-4 w-5 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-muted ring-1 ring-inset ring-border/80">
+            <Icon icon="flag:jp-4x3" class="size-4" style="width:16px;height:12px" />
+          </span>
+          <span>日本語</span>
         </UiDropdownMenuRadioItem>
       </UiDropdownMenuRadioGroup>
     </UiDropdownMenuContent>
