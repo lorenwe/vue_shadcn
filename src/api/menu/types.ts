@@ -65,3 +65,38 @@ export type MenuItem2 = z.infer<typeof MenuItemSchema2>
  */
 export const MenuResponseSchema2 = z.array(MenuItemSchema2)
 export type MenuResponse2 = z.infer<typeof MenuResponseSchema2>
+
+/**
+ * 菜单管理列表项（/menu/list 接口返回，支持递归 children）
+ */
+export const MenuListItemSchema: z.ZodType<{
+  id: number
+  menu_type: string
+  path?: string | null
+  component?: string | null
+  permission?: string | null
+  icon?: string | null
+  sort?: number
+  target?: string | null
+  status?: number
+  children?: z.infer<typeof MenuListItemSchema>[]
+}> = z.object({
+  id: z.number(),
+  menu_type: z.string(),
+  path: z.string().nullable().optional(),
+  component: z.string().nullable().optional(),
+  permission: z.string().nullable().optional(),
+  icon: z.string().nullable().optional(),
+  sort: z.number().optional(),
+  target: z.string().nullable().optional(),
+  status: z.number().optional(),
+  children: z.lazy(() => MenuListItemSchema.array().optional()),
+}).passthrough()
+
+export type MenuListItem = z.infer<typeof MenuListItemSchema>
+
+/**
+ * 菜单管理列表 = 菜单项数组
+ */
+export const MenuListResponseSchema = z.array(MenuListItemSchema)
+export type MenuListResponse = z.infer<typeof MenuListResponseSchema>

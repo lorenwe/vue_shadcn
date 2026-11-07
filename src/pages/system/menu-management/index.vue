@@ -7,13 +7,36 @@ import {
   useVueTable,
   type ExpandedState,
 } from '@tanstack/vue-table'
-import { ref, h, computed } from 'vue'
+import { ref, h, computed, onMounted } from 'vue'
 import { Button } from '@/components/ui/button'
 import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon } from '@lucide/vue'
 import DataTable from './components/table.vue'
-import { menuTreeData, type MenuNode } from './data'
+import { toMenuNodes, type MenuNode } from './data'
+import { fetchMenuListApi } from '@/api/menu/menu'
+import type { MenuListItem } from '@/api/menu/types'
 
 defineOptions({ name: 'MenuManagement' })
+
+const menuList = ref<MenuListItem[]>([])
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+
+async function loadMenuList() {
+  isLoading.value = true
+  error.value = null
+  try {
+    menuList.value = await fetchMenuListApi()
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(loadMenuList)
+
+/** 后端数据 → 树形展示节点 */
+const menuTree = computed<MenuNode[]>(() => toMenuNodes(menuList.value))
 
 function collectAllRows(nodes: MenuNode[]): MenuNode[] {
   const result: MenuNode[] = []
@@ -56,7 +79,8 @@ const columns = [
               size: 'icon',
               class: 'size-7',
               onClick: row.getToggleExpandedHandler(),
-            }, [
+            }, 
+            () => [
               h(ChevronRightIcon, {
                 class: `size-4 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
               }),
@@ -74,22 +98,16 @@ const columns = [
       const canExpand = row.getCanExpand()
       const isExpanded = row.getIsExpanded()
       const depth = row.depth
-      let typeIcon = 'lucide:file'
-      let typeIconClass = 'text-gray-400'
-      if (canExpand) {
-        typeIcon = isExpanded ? 'lucide:folder-open' : 'lucide:folder'
-        typeIconClass = 'text-amber-500'
-      }
+      const typeIcon = canExpand
+        ? (isExpanded ? 'lucide:folder-open' : 'lucide:folder')
+        : 'lucide:file'
+      const typeIconClass = canExpand ? 'text-amber-500' : 'text-gray-400'
       return h('div', {
         class: 'flex items-center gap-2 min-w-0',
         style: { paddingLeft: `${depth * 1.5}rem` },
       }, [
-        canExpand
-          ? h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` })
-          : row.original.icon || h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` }),
-        h('span', {
-          class: canExpand ? 'font-semibold truncate' : 'font-normal truncate',
-        }, row.getValue('title')),
+        h(Icon, { icon: typeIcon, class: `size-4 shrink-0 ${typeIconClass}` }),
+        h('span', { class: canExpand ? 'font-semibold truncate' : 'font-normal truncate', }, row.getValue('title')),
       ])
     },
   }),
@@ -120,14 +138,14 @@ const columns = [
           variant: 'ghost',
           size: 'sm',
           class: 'h-8 text-xs',
-        }, '编辑'),
+        }, () => '编辑'),
         canExpand
           ? null
           : h(Button, {
               variant: 'ghost',
               size: 'sm',
               class: 'h-8 text-xs text-destructive hover:text-destructive',
-            }, '删除'),
+            }, () => '删除'),
       ])
     },
   }),
@@ -135,15 +153,15 @@ const columns = [
 
 const expanded = ref<ExpandedState>({})
 
-const allParentIds = collectParentIds(menuTreeData)
+const allParentIds = computed(() => collectParentIds(menuTree.value))
 const isAllExpanded = computed(() => {
   const expandedKeys = Object.keys(expanded.value as Record<string, boolean>)
-  return allParentIds.every(id => expandedKeys.includes(id))
+  return allParentIds.value.length > 0 && allParentIds.value.every(id => expandedKeys.includes(id))
 })
 
 function expandAll() {
   const obj: Record<string, true> = {}
-  for (const id of allParentIds) {
+  for (const id of allParentIds.value) {
     obj[id] = true
   }
   expanded.value = obj
@@ -155,7 +173,7 @@ function collapseAll() {
 
 const table = useVueTable({
   get data() {
-    return menuTreeData
+    return menuTree.value
   },
   state: {
     get expanded() {
@@ -176,8 +194,8 @@ const table = useVueTable({
   },
 })
 
-const totalRows = computed(() => collectAllRows(menuTreeData).length)
-const topLevelCount = computed(() => menuTreeData.length)
+const totalRows = computed(() => collectAllRows(menuTree.value).length)
+const topLevelCount = computed(() => menuTree.value.length)
 </script>
 
 <template>
@@ -186,15 +204,20 @@ const topLevelCount = computed(() => menuTreeData.length)
       <div>
         <h2 class="text-lg font-semibold">菜单列表</h2>
         <p class="text-sm text-muted-foreground">
-          {{ topLevelCount }} 个一级菜单，共 {{ totalRows }} 个菜单项
+          <template v-if="isLoading">正在加载…</template>
+          <template v-else>{{ topLevelCount }} 个一级菜单，共 {{ totalRows }} 个菜单项</template>
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <Button variant="outline" size="sm" @click="isAllExpanded ? collapseAll() : expandAll()">
+        <Button variant="outline" size="sm" :disabled="isLoading" @click="isAllExpanded ? collapseAll() : expandAll()">
           <component :is="isAllExpanded ? ChevronsUpIcon : ChevronsDownIcon" class="size-4" />
           <span class="ml-1">{{ isAllExpanded ? '全部收起' : '全部展开' }}</span>
         </Button>
       </div>
+    </div>
+
+    <div v-if="error" class="text-sm text-destructive">
+      加载失败：{{ error }}
     </div>
 
     <DataTable
