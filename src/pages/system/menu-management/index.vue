@@ -8,14 +8,18 @@ import {
   type ExpandedState,
 } from '@tanstack/vue-table'
 import { ref, h, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Button } from '@/components/ui/button'
 import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon } from '@lucide/vue'
 import DataTable from './components/table.vue'
 import { toMenuNodes, type MenuNode } from './data'
 import { fetchMenuListApi } from '@/api/menu/menu'
 import type { MenuListItem } from '@/api/menu/types'
+import type { Language } from '@/api/i18n/types'
 
 defineOptions({ name: 'MenuManagement' })
+
+const { locale, t } = useI18n()
 
 const menuList = ref<MenuListItem[]>([])
 const isLoading = ref(false)
@@ -35,8 +39,8 @@ async function loadMenuList() {
 
 onMounted(loadMenuList)
 
-/** 后端数据 → 树形展示节点 */
-const menuTree = computed<MenuNode[]>(() => toMenuNodes(menuList.value))
+/** 后端数据 → 树形展示节点（跟随当前语言） */
+const menuTree = computed<MenuNode[]>(() => toMenuNodes(menuList.value, locale.value as Language))
 
 function collectAllRows(nodes: MenuNode[]): MenuNode[] {
   const result: MenuNode[] = []
@@ -90,7 +94,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('title', {
-    header: '菜单名称',
+    header: () => t('pages.system.menu-management.name'),
     size: 280,
     minSize: 160,
     maxSize: 400,
@@ -112,7 +116,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('url', {
-    header: '路由地址',
+    header: () => t('pages.system.menu-management.path'),
     size: 9999,
     minSize: 100,
     cell: ({ row }) => {
@@ -127,7 +131,7 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    header: () => h('div', { class: 'text-right' }, '操作'),
+    header: () => h('div', { class: 'text-right' }, t('global.table.operation')),
     size: 120,
     minSize: 100,
     maxSize: 120,

@@ -1,4 +1,5 @@
 import z from 'zod'
+import type { Language } from '@/api/i18n/types'
 
 /**
  * 菜单项 meta 元数据 schema
@@ -67,6 +68,11 @@ export const MenuResponseSchema2 = z.array(MenuItemSchema2)
 export type MenuResponse2 = z.infer<typeof MenuResponseSchema2>
 
 /**
+ * 菜单翻译字段（/menu/list 接口返回，键为语言代码）
+ */
+export type MenuTranslations = Record<Language, string | null | undefined>
+
+/**
  * 菜单管理列表项（/menu/list 接口返回，支持递归 children）
  */
 export const MenuListItemSchema: z.ZodType<{
@@ -80,6 +86,10 @@ export const MenuListItemSchema: z.ZodType<{
   target?: string | null
   status?: number
   children?: z.infer<typeof MenuListItemSchema>[]
+  'en-US'?: string | null
+  'ja-JP'?: string | null
+  'zh-CN'?: string | null
+  'zh-TW'?: string | null
 }> = z.object({
   id: z.number(),
   menu_type: z.string(),
@@ -91,6 +101,10 @@ export const MenuListItemSchema: z.ZodType<{
   target: z.string().nullable().optional(),
   status: z.number().optional(),
   children: z.lazy(() => MenuListItemSchema.array().optional()),
+  'en-US': z.string().nullable().optional(),
+  'ja-JP': z.string().nullable().optional(),
+  'zh-CN': z.string().nullable().optional(),
+  'zh-TW': z.string().nullable().optional(),
 }).passthrough()
 
 export type MenuListItem = z.infer<typeof MenuListItemSchema>
