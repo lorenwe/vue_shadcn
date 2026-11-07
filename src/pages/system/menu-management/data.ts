@@ -47,3 +47,17 @@ export function toMenuNodes(items: MenuListItem[], locale: Language = DEFAULT_LO
     subRows: item.children?.length ? toMenuNodes(item.children, locale) : undefined,
   }))
 }
+
+/**
+ * 按 id 在菜单树中查找原始后端菜单项（用于编辑回填）
+ */
+export function findMenuItemById(items: MenuListItem[], id: number): MenuListItem | null {
+  for (const item of items) {
+    if (item.id === id) return item
+    if (item.children?.length) {
+      const found = findMenuItemById(item.children, id)
+      if (found) return found
+    }
+  }
+  return null
+}

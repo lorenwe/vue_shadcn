@@ -74,17 +74,22 @@ export type MenuTranslations = Record<Language, string | null | undefined>
 
 /**
  * 菜单管理列表项（/menu/list 接口返回，支持递归 children）
+ * 字段与后端 sys_menu 表对齐，翻译字段由语言表联表返回
  */
 export const MenuListItemSchema: z.ZodType<{
   id: number
+  parent_id?: number
+  language_id?: number | null
   menu_type: string
-  path?: string | null
+  menu_api?: string | null
   component?: string | null
-  permission?: string | null
+  path?: string | null
   icon?: string | null
+  permission?: string | null
   sort?: number
-  target?: string | null
   status?: number
+  redirect?: string | null
+  target?: string | null
   children?: z.infer<typeof MenuListItemSchema>[]
   'en-US'?: string | null
   'ja-JP'?: string | null
@@ -92,14 +97,18 @@ export const MenuListItemSchema: z.ZodType<{
   'zh-TW'?: string | null
 }> = z.object({
   id: z.number(),
+  parent_id: z.number().optional(),
+  language_id: z.number().nullable().optional(),
   menu_type: z.string(),
-  path: z.string().nullable().optional(),
+  menu_api: z.string().nullable().optional(),
   component: z.string().nullable().optional(),
-  permission: z.string().nullable().optional(),
+  path: z.string().nullable().optional(),
   icon: z.string().nullable().optional(),
+  permission: z.string().nullable().optional(),
   sort: z.number().optional(),
-  target: z.string().nullable().optional(),
   status: z.number().optional(),
+  redirect: z.string().nullable().optional(),
+  target: z.string().nullable().optional(),
   children: z.lazy(() => MenuListItemSchema.array().optional()),
   'en-US': z.string().nullable().optional(),
   'ja-JP': z.string().nullable().optional(),

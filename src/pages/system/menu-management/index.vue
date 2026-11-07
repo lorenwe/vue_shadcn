@@ -10,9 +10,10 @@ import {
 import { ref, h, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Button } from '@/components/ui/button'
-import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon } from '@lucide/vue'
+import { ChevronRightIcon, ChevronsDownIcon, ChevronsUpIcon, PlusIcon } from '@lucide/vue'
 import DataTable from './components/table.vue'
-import { toMenuNodes, type MenuNode } from './data'
+import MenuFormSheet from './components/menu-form-sheet.vue'
+import { toMenuNodes, findMenuItemById, type MenuNode } from './data'
 import { fetchMenuListApi } from '@/api/menu/menu'
 import type { MenuListItem } from '@/api/menu/types'
 import type { Language } from '@/api/i18n/types'
@@ -41,6 +42,23 @@ onMounted(loadMenuList)
 
 /** 后端数据 → 树形展示节点（跟随当前语言） */
 const menuTree = computed<MenuNode[]>(() => toMenuNodes(menuList.value, locale.value as Language))
+
+const drawerOpen = ref(false)
+const editingMenu = ref<MenuListItem | null>(null)
+
+function openCreate() {
+  editingMenu.value = null
+  drawerOpen.value = true
+}
+
+function openEdit(id: string) {
+  editingMenu.value = findMenuItemById(menuList.value, Number(id))
+  drawerOpen.value = true
+}
+
+function onSubmitted() {
+  loadMenuList()
+}
 
 function collectAllRows(nodes: MenuNode[]): MenuNode[] {
   const result: MenuNode[] = []
@@ -142,6 +160,7 @@ const columns = [
           variant: 'ghost',
           size: 'sm',
           class: 'h-8 text-xs',
+          onClick: () => openEdit(row.original.id),
         }, () => '编辑'),
         canExpand
           ? null
@@ -213,6 +232,10 @@ const topLevelCount = computed(() => menuTree.value.length)
         </p>
       </div>
       <div class="flex items-center gap-2">
+        <Button size="sm" :disabled="isLoading" @click="openCreate">
+          <PlusIcon class="size-4" />
+          <span class="ml-1">新增</span>
+        </Button>
         <Button variant="outline" size="sm" :disabled="isLoading" @click="isAllExpanded ? collapseAll() : expandAll()">
           <component :is="isAllExpanded ? ChevronsUpIcon : ChevronsDownIcon" class="size-4" />
           <span class="ml-1">{{ isAllExpanded ? '全部收起' : '全部展开' }}</span>
@@ -227,6 +250,12 @@ const topLevelCount = computed(() => menuTree.value.length)
     <DataTable
       :columns="columns"
       :table="table"
+    />
+
+    <MenuFormSheet
+      v-model:open="drawerOpen"
+      :menu="editingMenu"
+      @submitted="onSubmitted"
     />
   </div>
 </template>
