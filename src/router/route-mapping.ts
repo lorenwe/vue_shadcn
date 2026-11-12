@@ -70,5 +70,11 @@ export const routeMap: RouteMapping[] = [
     path: '/system/menu-management',
     component: () => import('@/pages/system/menu-management/index.vue'),
     meta: { title: '菜单管理', cacheName: 'MenuManagement' }
+  },
+  // ===== 系统设置-多语言管理 =====
+  {
+    path: '/system/internationalization',
+    component: () => import('@/pages/system/internationalization/index.vue'),
+    meta: { title: '多语言管理', cacheName: 'Internationalization' }
   }
 ]

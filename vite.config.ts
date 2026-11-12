@@ -71,6 +71,18 @@ export default defineConfig({
     strictPort: false,
     // 是否自动打开浏览器
     open: true,
+    // 忽略编辑器 / AI 原子写入产生的临时文件。
+    // Windows 上 Vite 尝试 watch 这些正在被重命名/删除的临时文件时会抛 EBUSY，
+    // 该错误未被捕获会直接让 dev server 退出。
+    watch: {
+      ignored: [
+        /[\\/]node_modules[\\/]/,
+        /[\\/]dist[\\/]/,
+        /[\\/]\.git[\\/]/,
+        /\.tmpdir([\\/]|$)/,
+        /\.tmp$/,
+      ],
+    },
     // 反向代理
     proxy: {
       "/api": {

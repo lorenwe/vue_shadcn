@@ -1,0 +1,6 @@
+{
+  "source": "derived-from-list",
+  "derivedFrom": "docs/api/i18n/language-list.full.json",
+  "generatedAt": "2026-11-12T07:06:27.392Z",
+  "note": "真实 /language/allLocales 响应请用 scripts/fetch-language-pack.mjs 覆盖"
+}

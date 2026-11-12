@@ -1,0 +1,292 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": [
+    {
+      "zhCN": null,
+      "enUS": null,
+      "zhTW": null,
+      "sort": 0,
+      "jaJP": null,
+      "create_by": 0,
+      "parent_id": 0,
+      "name": "components",
+      "update_at": 0,
+      "delete_at": 0,
+      "id": 10,
+      "update_by": 0,
+      "create_at": 0,
+      "children": [
+        {
+          "zhCN": null,
+          "enUS": null,
+          "zhTW": null,
+          "sort": 0,
+          "jaJP": null,
+          "create_by": 0,
+          "parent_id": 10,
+          "name": "UploadImage",
+          "update_at": 0,
+          "delete_at": 0,
+          "id": 11,
+          "update_by": 0,
+          "create_at": 0,
+          "children": [
+            {
+              "zhCN": "只能上传 {type} 文件！",
+              "enUS": "Only {type} files can be uploaded!",
+              "zhTW": "只能上傳 {type} 文件！",
+              "sort": 0,
+              "jaJP": "{type}ファイルのみアップロードできます!",
+              "create_by": 0,
+              "parent_id": 11,
+              "name": "accept",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 12,
+              "update_by": 0,
+              "create_at": 0
+            },
+            {
+              "zhCN": "图片大小限制在{size}MB以内!",
+              "enUS": "Image size is limited to {size}MB!",
+              "zhTW": "圖片大小限製在{size}MB以內!",
+              "sort": 0,
+              "jaJP": "画像サイズは{size}MBに制限します!",
+              "create_by": 0,
+              "parent_id": 11,
+              "name": "maxSize",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 13,
+              "update_by": 0,
+              "create_at": 0
+            }
+          ]
+        },
+        {
+          "zhCN": null,
+          "enUS": null,
+          "zhTW": null,
+          "sort": 0,
+          "jaJP": null,
+          "create_by": 0,
+          "parent_id": 10,
+          "name": "BasicLayout",
+          "update_at": 0,
+          "delete_at": 0,
+          "id": 14,
+          "update_by": 0,
+          "create_at": 0,
+          "children": [
+            {
+              "zhCN": null,
+              "enUS": null,
+              "zhTW": null,
+              "sort": 0,
+              "jaJP": null,
+              "create_by": 0,
+              "parent_id": 14,
+              "name": "ActionButtons",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 15,
+              "update_by": 0,
+              "create_at": 0,
+              "children": [
+                {
+                  "zhCN": "文档",
+                  "enUS": "Document",
+                  "zhTW": "文檔",
+                  "sort": 0,
+                  "jaJP": "ドキュメント",
+                  "create_by": 0,
+                  "parent_id": 15,
+                  "name": "document",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 16,
+                  "update_by": 0,
+                  "create_at": 0
+                },
+                {
+                  "zhCN": "Github Issues",
+                  "enUS": "Github Issues",
+                  "zhTW": "Github Issues",
+                  "sort": 0,
+                  "jaJP": "Github Issuesです",
+                  "create_by": 0,
+                  "parent_id": 15,
+                  "name": "github-issues",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 17,
+                  "update_by": 0,
+                  "create_at": 0
+                }
+              ]
+            },
+            {
+              "zhCN": "退出登录",
+              "enUS": "Log out",
+              "zhTW": "退出登錄",
+              "sort": 0,
+              "jaJP": "ログアウトします",
+              "create_by": 0,
+              "parent_id": 14,
+              "name": "Logout",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 19,
+              "update_by": 0,
+              "create_at": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "zhCN": null,
+      "enUS": null,
+      "zhTW": null,
+      "sort": 0,
+      "jaJP": null,
+      "create_by": 0,
+      "parent_id": 0,
+      "name": "menu",
+      "update_at": 0,
+      "delete_at": 0,
+      "id": 43,
+      "update_by": 0,
+      "create_at": 0,
+      "children": [
+        {
+          "zhCN": "系统设置",
+          "enUS": "System Settings",
+          "zhTW": "系統設置",
+          "sort": 0,
+          "jaJP": "システム設定",
+          "create_by": 0,
+          "parent_id": 43,
+          "name": "system",
+          "update_at": 0,
+          "delete_at": 0,
+          "id": 44,
+          "update_by": 0,
+          "create_at": 0,
+          "children": [
+            {
+              "zhCN": "菜单管理",
+              "enUS": "Menu Management",
+              "zhTW": "菜單管理",
+              "sort": 0,
+              "jaJP": "メニュー管理",
+              "create_by": 0,
+              "parent_id": 44,
+              "name": "menu-management",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 45,
+              "update_by": 0,
+              "create_at": 0,
+              "children": [
+                {
+                  "zhCN": "新建",
+                  "enUS": "New",
+                  "zhTW": "新建",
+                  "sort": 0,
+                  "jaJP": "新築",
+                  "create_by": 0,
+                  "parent_id": 45,
+                  "name": "add",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 46,
+                  "update_by": 0,
+                  "create_at": 0
+                },
+                {
+                  "zhCN": "删除",
+                  "enUS": "Delete",
+                  "zhTW": "刪除",
+                  "sort": 0,
+                  "jaJP": "削除",
+                  "create_by": 0,
+                  "parent_id": 45,
+                  "name": "delete",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 47,
+                  "update_by": 0,
+                  "create_at": 0
+                }
+              ]
+            },
+            {
+              "zhCN": "国际化",
+              "enUS": "Internationalization",
+              "zhTW": "國際化",
+              "sort": 0,
+              "jaJP": "国際化",
+              "create_by": 0,
+              "parent_id": 44,
+              "name": "internationalization",
+              "update_at": 0,
+              "delete_at": 0,
+              "id": 50,
+              "update_by": 0,
+              "create_at": 0,
+              "children": [
+                {
+                  "zhCN": "新建",
+                  "enUS": "New",
+                  "zhTW": "新建",
+                  "sort": 0,
+                  "jaJP": "新築",
+                  "create_by": 0,
+                  "parent_id": 50,
+                  "name": "add",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 51,
+                  "update_by": 0,
+                  "create_at": 0
+                },
+                {
+                  "zhCN": "删除",
+                  "enUS": "Delete",
+                  "zhTW": "刪除",
+                  "sort": 0,
+                  "jaJP": "削除",
+                  "create_by": 0,
+                  "parent_id": 50,
+                  "name": "delete",
+                  "update_at": 0,
+                  "delete_at": 0,
+                  "id": 52,
+                  "update_by": 0,
+                  "create_at": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zhCN": "指示面板",
+          "enUS": "Dashboard",
+          "zhTW": "指示面板",
+          "sort": 0,
+          "jaJP": "指示パネル",
+          "create_by": 0,
+          "parent_id": 43,
+          "name": "dashboard",
+          "update_at": 0,
+          "delete_at": 0,
+          "id": 55,
+          "update_by": 0,
+          "create_at": 0
+        }
+      ]
+    }
+  ]
+}
