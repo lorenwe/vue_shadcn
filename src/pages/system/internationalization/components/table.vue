@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Header, Table as VueTable } from '@tanstack/vue-table'
+import type { Header, Row, Table as VueTable } from '@tanstack/vue-table'
 import { FlexRender } from '@tanstack/vue-table'
 import {
   Table,
@@ -28,6 +28,19 @@ function getRowClasses(depth: number): string {
     'shadow-[inset_2px_0_0_hsl(var(--border))]',
     depth > 1 && 'bg-muted/20',
   )
+}
+
+function getRowClass(row: Row<LanguageNode>): string {
+  return cn(
+    getRowClasses(row.depth),
+    row.getCanExpand() && 'cursor-pointer hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+  )
+}
+
+/** 点击整行展开 / 收起；叶子节点无操作 */
+function toggleRow(row: Row<LanguageNode>) {
+  if (!row.getCanExpand()) return
+  row.toggleExpanded()
 }
 
 /**
@@ -85,7 +98,11 @@ function getColStyle(header: Header<LanguageNode, unknown>) {
             v-for="row in props.table.getRowModel().rows"
             :key="row.id"
             :data-state="row.getIsSelected() && 'selected'"
-            :class="getRowClasses(row.depth)"
+            :tabindex="row.getCanExpand() ? 0 : undefined"
+            :class="getRowClass(row)"
+            @click="toggleRow(row)"
+            @keydown.enter="toggleRow(row)"
+            @keydown.space.prevent="toggleRow(row)"
           >
             <TableCell
               v-for="cell in row.getVisibleCells()"

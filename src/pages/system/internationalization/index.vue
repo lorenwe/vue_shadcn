@@ -7,43 +7,57 @@ import {
   type ExpandedState,
 } from '@tanstack/vue-table'
 import { computed, h, onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { toast } from 'vue-sonner'
 import {
   ChevronRightIcon,
   FileIcon,
   FolderIcon,
   FolderOpenIcon,
+  PlusIcon,
   RefreshCwIcon,
 } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import DataTable from './components/table.vue'
+import LanguageFormSheet from './components/form-sheet.vue'
 import {
   collectParentIds,
   countLeaves,
   countNodes,
   filterLanguageNodes,
   toLanguageNodes,
+  toParentOptions,
   type LanguageNode,
 } from './data'
-import { fetchLanguageListApi } from '@/api/i18n/i18n'
+import { usePageText } from './use-page-text'
+import { deleteLanguageApi, fetchLanguageListApi } from '@/api/i18n/i18n'
+import { getI18nInstance } from '@/plugins/i18n/setup'
+import { useI18nLoader } from '@/composables/use-i18n-loader'
 
 defineOptions({ name: 'Internationalization' })
 
-const { t, te, locale } = useI18n()
-
-/**
- * 页面 chrome 文案优先取接口语言包；接口尚未提供该 key 时回退到传入的默认值。
- * 不把多语言写进 src/plugins/i18n/lang（那些静态文件只服务未登录场景）。
- */
-function tr(key: string, fallback: string) {
-  return te(key) ? t(key) : fallback
-}
+const { t, te, tr, locale } = usePageText()
 
 const items = ref<LanguageNode[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 const keyword = ref('')
+
+const formOpen = ref(false)
+const editingNode = ref<LanguageNode | null>(null)
+const parentOptions = computed(() => toParentOptions(items.value))
+
+const deleteOpen = ref(false)
+const deleteTarget = ref<LanguageNode | null>(null)
+const deleting = ref(false)
 
 async function loadList() {
   isLoading.value = true
@@ -56,6 +70,20 @@ async function loadList() {
   } finally {
     isLoading.value = false
   }
+}
+
+/** 词条增删改后，刷新运行时 /language/allLocales 语言包 */
+async function refreshRuntimePack() {
+  try {
+    await useI18nLoader().loadLocaleMessages(getI18nInstance())
+  } catch (e) {
+    console.warn('[i18n] 刷新运行时语言包失败', e)
+  }
+}
+
+async function onSubmitted() {
+  await loadList()
+  await refreshRuntimePack()
 }
 
 onMounted(loadList)
@@ -101,6 +129,45 @@ function collapseAll() {
   expanded.value = {}
 }
 
+function openCreate() {
+  editingNode.value = null
+  formOpen.value = true
+}
+
+function openEdit(node: LanguageNode) {
+  editingNode.value = node
+  formOpen.value = true
+}
+
+/** 有子节点时禁止删除 */
+function askDelete(node: LanguageNode) {
+  if (node.hasChildren) {
+    toast.error(tr('pages.system.internationalization.hasChildren', '请先删除该节点的所有子节点'))
+    return
+  }
+  deleteTarget.value = node
+  deleteOpen.value = true
+}
+
+async function confirmDelete() {
+  const target = deleteTarget.value
+  if (!target) return
+
+  deleting.value = true
+  try {
+    await deleteLanguageApi(Number(target.id))
+    toast.success(tr('pages.system.internationalization.deleteSuccess', '删除成功'))
+    deleteOpen.value = false
+    deleteTarget.value = null
+    await loadList()
+    await refreshRuntimePack()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : String(e))
+  } finally {
+    deleting.value = false
+  }
+}
+
 const columnHelper = createColumnHelper<LanguageNode>()
 
 function renderTranslation(value: string | null) {
@@ -132,17 +199,12 @@ const columns = computed(() => {
           return h('span', { class: 'block w-6' })
         }
         return h(
-          Button,
+          'span',
           {
-            variant: 'ghost',
-            size: 'icon',
-            class: 'size-6',
-            'aria-label': row.getIsExpanded()
-              ? tr('pages.system.internationalization.collapse', '收起')
-              : tr('pages.system.internationalization.expand', '展开'),
-            onClick: row.getToggleExpandedHandler(),
+            class: 'flex size-6 items-center justify-center',
+            'aria-hidden': 'true',
           },
-          () => [
+          [
             h(ChevronRightIcon, {
               class: `size-3.5 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
             }),
@@ -211,6 +273,51 @@ const columns = computed(() => {
         String(getValue()),
       ),
     }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => tr('global.table.operation', '操作'),
+      size: 130,
+      minSize: 110,
+      maxSize: 160,
+      cell: ({ row }) => {
+        const node = row.original
+        const hasChildren = node.hasChildren
+        return h('div', { class: 'flex justify-end gap-1' }, [
+          h(
+            Button,
+            {
+              variant: 'ghost',
+              size: 'sm',
+              class: 'h-8 px-2 text-xs',
+              onClick: (event: MouseEvent) => {
+                event.stopPropagation()
+                openEdit(node)
+              },
+              onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
+            },
+            () => tr('menu.system.internationalization.edit', '编辑'),
+          ),
+          h(
+            Button,
+            {
+              variant: 'ghost',
+              size: 'sm',
+              class: 'h-8 px-2 text-xs text-destructive hover:text-destructive',
+              disabled: hasChildren,
+              title: hasChildren
+                ? tr('pages.system.internationalization.hasChildren', '请先删除该节点的所有子节点')
+                : undefined,
+              onClick: (event: MouseEvent) => {
+                event.stopPropagation()
+                askDelete(node)
+              },
+              onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
+            },
+            () => tr('menu.system.internationalization.delete', '删除'),
+          ),
+        ])
+      },
+    }),
   ]
 })
 
@@ -257,6 +364,10 @@ const table = useVueTable({
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <Button size="sm" :disabled="isLoading" @click="openCreate">
+          <PlusIcon class="size-4" />
+          <span class="ml-1">{{ tr('menu.system.internationalization.add', '新增') }}</span>
+        </Button>
         <Input
           v-model="keyword"
           :placeholder="tr('pages.system.internationalization.searchPlaceholder', t('global.form.placeholder'))"
@@ -302,5 +413,38 @@ const table = useVueTable({
       :loading-text="tr('pages.system.internationalization.loading', '…')"
       :empty-text="tr('pages.system.internationalization.empty', '—')"
     />
+
+    <LanguageFormSheet
+      v-model:open="formOpen"
+      :node="editingNode"
+      :parent-options="parentOptions"
+      @submitted="onSubmitted"
+    />
+
+    <Dialog :open="deleteOpen" @update:open="(v: boolean) => deleteOpen = v">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {{ tr('pages.system.internationalization.deleteTitle', '删除词条') }}
+          </DialogTitle>
+          <DialogDescription>
+            {{ tr('pages.system.internationalization.deleteDescription', '删除后不可恢复，确定删除该词条吗？') }}
+            <span v-if="deleteTarget" class="mt-1 block font-mono text-xs text-foreground">
+              {{ deleteTarget.name }}
+            </span>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter class="flex-row justify-end gap-2">
+          <Button variant="outline" :disabled="deleting" @click="deleteOpen = false">
+            {{ tr('pages.system.internationalization.cancel', '取消') }}
+          </Button>
+          <Button variant="destructive" :disabled="deleting" @click="confirmDelete">
+            {{ deleting
+              ? tr('pages.system.internationalization.deleting', '删除中…')
+              : tr('menu.system.internationalization.delete', '删除') }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>

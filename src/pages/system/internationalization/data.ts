@@ -3,13 +3,24 @@ import type { LanguageListItem } from '@/api/i18n/types'
 /** 页面展示用的多语言词条节点 */
 export interface LanguageNode {
   id: string
+  parentId: number
   name: string
   zhCN: string | null
   enUS: string | null
   jaJP: string | null
   zhTW: string | null
+  remark?: string
   sort: number
+  /** 真实子节点是否存在（搜索过滤后仍保留，用于删除限制） */
+  hasChildren: boolean
   children?: LanguageNode[]
+}
+
+/** 新增/编辑表单的父级下拉选项 */
+export interface ParentOption {
+  id: number
+  name: string
+  depth: number
 }
 
 /** 后端树 → 展示节点：兄弟节点按 sort、id 升序 */
@@ -18,14 +29,32 @@ export function toLanguageNodes(items: LanguageListItem[]): LanguageNode[] {
     .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.id - b.id)
     .map(item => ({
       id: String(item.id),
+      parentId: item.parent_id ?? 0,
       name: item.name,
       zhCN: item.zhCN ?? null,
       enUS: item.enUS ?? null,
       jaJP: item.jaJP ?? null,
       zhTW: item.zhTW ?? null,
+      remark: item.remark ?? undefined,
       sort: item.sort ?? 0,
+      hasChildren: !!item.children?.length,
       children: item.children?.length ? toLanguageNodes(item.children) : undefined,
     }))
+}
+
+/** 树 → 父级下拉选项（含层级，供缩进展示） */
+export function toParentOptions(nodes: LanguageNode[]): ParentOption[] {
+  const options: ParentOption[] = []
+  const walk = (list: LanguageNode[], depth: number) => {
+    for (const node of list) {
+      options.push({ id: Number(node.id), name: node.name, depth })
+      if (node.children?.length) {
+        walk(node.children, depth + 1)
+      }
+    }
+  }
+  walk(nodes, 0)
+  return options
 }
 
 function matchKeyword(node: LanguageNode, keyword: string): boolean {

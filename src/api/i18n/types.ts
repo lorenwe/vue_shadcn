@@ -28,6 +28,7 @@ export const LanguageListItemSchema: z.ZodType<{
   enUS?: string | null
   jaJP?: string | null
   zhTW?: string | null
+  remark?: string | null
   children?: z.infer<typeof LanguageListItemSchema>[]
 }> = z
   .object({
@@ -39,6 +40,7 @@ export const LanguageListItemSchema: z.ZodType<{
     enUS: z.string().nullable().optional(),
     jaJP: z.string().nullable().optional(),
     zhTW: z.string().nullable().optional(),
+    remark: z.string().nullable().optional(),
     children: z.lazy(() => LanguageListItemSchema.array().optional()),
   })
   .passthrough()
@@ -48,3 +50,19 @@ export type LanguageListItem = z.infer<typeof LanguageListItemSchema>
 /** 多语言词条列表（树形） */
 export const LanguageListResponseSchema = z.array(LanguageListItemSchema)
 export type LanguageListResponse = z.infer<typeof LanguageListResponseSchema>
+
+/**
+ * 新增 / 编辑语言词条的提交数据。
+ * 字段名与后端 SysLanguage 实体一致；id、createBy、updateBy 由后端生成，不在此提交。
+ */
+export interface LanguageSavePayload {
+  id?: number
+  parentId: number
+  sort: number
+  name: string
+  zhCN: string
+  enUS: string
+  jaJP: string
+  zhTW: string
+  remark?: string
+}

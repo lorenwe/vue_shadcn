@@ -1,20 +1,24 @@
 # 系统管理 / 多语言管理
 
-状态：已完成列表页、`/language/list` 接口接入，以及页面文案与表头多语言；
-新增 / 编辑 / 删除尚未实现。
+状态：已完成列表、`/language/list`、新增 / 编辑 / 删除
+（`/language/add`、`/language/edit`、`/language/del`）以及表头多语言。
 
 ## 目录结构
 
 ```text
 src/pages/system/internationalization/
-├─ index.vue              列表页（加载、搜索、展开/收起、刷新、错误重试）
-├─ components/table.vue   树形表格展示组件
-├─ data.ts                后端树 → 展示节点、搜索过滤、节点计数
-├─ types.ts               模块级类型预留
+├─ index.vue                   列表页（新增、编辑、删除、搜索、展开/收起、刷新）
+├─ components/table.vue        树形表格展示组件（点击整行展开/收起）
+├─ components/form-sheet.vue   新增 / 编辑抽屉表单
+├─ use-page-text.ts            页面文案 tr()：接口优先，缺失回退
+├─ data.ts                     后端树 → 展示节点、父级选项、搜索过滤、计数
+├─ types.ts                    模块级类型预留
 └─ README.md
 ```
 
 ## 接口
+
+### 列表
 
 - 地址：`POST /api/language/list`（`API_BASE_URL` 已带 `/api` 前缀，代码中写作 `/language/list`）
 - 响应外层：`{ code, message, data }`，`code === 200` 为成功
@@ -22,6 +26,26 @@ src/pages/system/internationalization/
   `id`、`parent_id`、`name`、`sort`、`zhCN`、`enUS`、`jaJP`、`zhTW`、`children`
 - API 封装：`src/api/i18n/i18n.ts` 的 `fetchLanguageListApi`
 - 响应校验：`src/api/i18n/types.ts` 的 `LanguageListResponseSchema`
+
+### 新增 / 编辑 / 删除
+
+| 操作 | 方法 | 地址 |
+|---|---|---|
+| 新增 | POST | `/language/add` |
+| 编辑 | POST | `/language/edit` |
+| 删除 | POST | `/language/del` |
+
+- 提交字段与后端 Java `SysLanguage` 对齐：
+  `parentId`、`name`、`sort`、`zhCN`、`enUS`、`jaJP`、`zhTW`、`remark`；
+  编辑时额外提交 `id`。
+- `id`、`createBy`、`updateBy` 由后端生成，表单不提交。
+- 删除请求同时携带 `?id=` 查询参数和 body `{ id }`，兼容
+  `@RequestParam` / `@RequestBody` 两种后端写法。
+- **删除限制**：只有叶子节点可删除。存在子节点时删除按钮禁用并提示
+  「请先删除该节点的所有子节点」；前端 `askDelete()` 也会再次校验。
+  后端仍应做最终校验。
+- 保存 / 删除成功后：重新拉取 `/language/list` 刷新列表，并重新拉取
+  `/language/allLocales` 更新运行时语言包。
 
 ## 路由
 
@@ -41,13 +65,13 @@ src/pages/system/internationalization/
 ## 多语言
 
 - 登录后语言数据来自 `POST /language/allLocales`（`src/plugins/i18n/setup.ts`
-  的 `isLogin` 分支），页面只用 `t()` 取词条；**不把业务页文案写进**
+  的 `isLogin` 分支），页面只用 `t()` / `tr()` 取词条；**不把业务页文案写进**
   `src/plugins/i18n/lang/*.json`，那些静态文件只服务未登录页面。
 - 表头直接使用后端已有词条：
   `pages.system.internationalization.name`、`.zh-CN` / `.en-US` / `.ja-JP` /
-  `.zh-TW`，排序列使用 `global.table.sort`。
-- 页面 chrome 文案使用 `pages.system.internationalization.*` 键；接口暂未提供时，
-  通过 `te()` 检测并回退默认文案/符号（加载 `…`、空数据 `—`）。
+  `.zh-TW`，排序列使用 `global.table.sort`，操作列使用 `global.table.operation`。
+- 页面 chrome、表单、确认弹窗文案使用 `pages.system.internationalization.*` 键；
+  接口暂未提供时，通过 `te()` 检测并回退默认文案/符号（加载 `…`、空数据 `—`）。
 - 建议在后端语言表补充以下键后，页面会随接口自动多语言：
 
 | 键（`pages.system.internationalization.` 前缀） | zh-CN | en-US | ja-JP | zh-TW |
@@ -69,6 +93,5 @@ src/pages/system/internationalization/
 
 ## 待实现
 
-- [ ] 新增 / 编辑 / 删除词条（待确认后端接口；保存成功后重新拉取
-  `/language/allLocales` 并刷新本地语言包）
 - [ ] 权限点与后端接口对齐
+- [ ] 支持移动节点（当前编辑时父级只读，避免改变整棵 key 前缀）
