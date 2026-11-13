@@ -9,7 +9,7 @@
 src/pages/system/internationalization/
 ├─ index.vue                   列表页（新增、编辑、删除、搜索、展开/收起、刷新）
 ├─ components/table.vue        树形表格展示组件（点击整行展开/收起）
-├─ components/form-sheet.vue   新增 / 编辑抽屉表单
+├─ components/form-sheet.vue   新增 / 编辑抽屉表单（父级使用 Cascader）
 ├─ use-page-text.ts            页面文案 tr()：接口优先，缺失回退
 ├─ data.ts                     后端树 → 展示节点、父级选项、搜索过滤、计数
 ├─ types.ts                    模块级类型预留
@@ -90,6 +90,17 @@ src/pages/system/internationalization/
 
 - 表头由 `columns` computed 在 `locale` 变化时重建，保证表头跟随语言切换；
   不会出现只刷新正文、表头仍是旧语言的情况。
+
+## 父级选择
+
+- 新增/编辑表单的父级字段使用 [Cascader](../../../components/cascader/README.md)；
+- 选项 label 只显示国际化字段名 `node.name`，不随界面语言切换；
+- `change-on-select`：任意层级都可直接选中；
+- `show-path=false`：选中后触发器只显示当前选中的单值名称，不显示完整路径；
+- 桌面端使用 `expand-trigger="click"`：点击父级展开下一列，当前展开项高亮，
+  点击面板底部「选择当前：xxx」选中父级；点击叶子直接选中；
+- 移动端在抽屉头部提供「选择当前」，点击父级行仍逐级下钻；
+- 编辑模式下父级只读，避免改变整棵 key 前缀。
 
 ## 待实现
 

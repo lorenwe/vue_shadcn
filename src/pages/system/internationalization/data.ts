@@ -1,4 +1,5 @@
 import type { LanguageListItem } from '@/api/i18n/types'
+import type { CascaderOption } from '@/components/cascader/types'
 
 /** 页面展示用的多语言词条节点 */
 export interface LanguageNode {
@@ -16,11 +17,13 @@ export interface LanguageNode {
   children?: LanguageNode[]
 }
 
-/** 新增/编辑表单的父级下拉选项 */
-export interface ParentOption {
-  id: number
-  name: string
-  depth: number
+/** 后端树 → Cascader 父级选项（label 使用国际化字段名 name） */
+export function toParentTree(nodes: LanguageNode[]): CascaderOption[] {
+  return nodes.map(node => ({
+    value: Number(node.id),
+    label: node.name,
+    children: node.children?.length ? toParentTree(node.children) : undefined,
+  }))
 }
 
 /** 后端树 → 展示节点：兄弟节点按 sort、id 升序 */
@@ -40,21 +43,6 @@ export function toLanguageNodes(items: LanguageListItem[]): LanguageNode[] {
       hasChildren: !!item.children?.length,
       children: item.children?.length ? toLanguageNodes(item.children) : undefined,
     }))
-}
-
-/** 树 → 父级下拉选项（含层级，供缩进展示） */
-export function toParentOptions(nodes: LanguageNode[]): ParentOption[] {
-  const options: ParentOption[] = []
-  const walk = (list: LanguageNode[], depth: number) => {
-    for (const node of list) {
-      options.push({ id: Number(node.id), name: node.name, depth })
-      if (node.children?.length) {
-        walk(node.children, depth + 1)
-      }
-    }
-  }
-  walk(nodes, 0)
-  return options
 }
 
 function matchKeyword(node: LanguageNode, keyword: string): boolean {

@@ -14,24 +14,19 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { createLanguageApi, updateLanguageApi } from '@/api/i18n/i18n'
 import type { LanguageSavePayload } from '@/api/i18n/types'
+import Cascader from '@/components/cascader/cascader.vue'
+import type { CascaderOption } from '@/components/cascader/types'
 import { usePageText } from '../use-page-text'
-import type { LanguageNode, ParentOption } from '../data'
+import type { LanguageNode } from '../data'
 
 defineOptions({ name: 'LanguageFormSheet' })
 
 const props = defineProps<{
   open: boolean
   node: LanguageNode | null
-  parentOptions: ParentOption[]
+  parentTree: CascaderOption[]
 }>()
 
 const emit = defineEmits<{
@@ -70,12 +65,9 @@ function toFormValues(node: LanguageNode | null): LanguageFormValues {
   }
 }
 
-const parentOptionsWithRoot = computed(() => [
-  { id: 0, name: tr('pages.system.internationalization.root', '根节点'), depth: 0 },
-  ...props.parentOptions.map(option => ({
-    ...option,
-    name: `${'\u3000'.repeat(option.depth)}${option.name}`,
-  })),
+const treeData = computed<CascaderOption[]>(() => [
+  { value: 0, label: tr('pages.system.internationalization.root', '根节点') },
+  ...props.parentTree,
 ])
 
 const form = useForm({
@@ -167,24 +159,20 @@ watch(
                 {{ tr('global.form.parent_id', '父级') }}
               </Label>
               <form.Field name="parentId" v-slot="{ field }">
-                <Select
+                <Cascader
                   :model-value="field.state.value"
+                  :options="treeData"
                   :disabled="isEdit"
-                  @update:model-value="(v) => field.handleChange(Number(v))"
-                >
-                  <SelectTrigger id="language-form-parent" class="w-full">
-                    <SelectValue :placeholder="tr('pages.system.internationalization.parentPlaceholder', '请选择父级')" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      v-for="option in parentOptionsWithRoot"
-                      :key="option.id"
-                      :value="option.id"
-                    >
-                      {{ option.name }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  :clearable="false"
+                  :show-path="false"
+                  change-on-select
+                  expand-trigger="click"
+                  :placeholder="tr('pages.system.internationalization.parentPlaceholder', '请选择父级')"
+                  :search-placeholder="tr('pages.system.internationalization.searchNode', '搜索节点...')"
+                  :empty-text="tr('pages.system.internationalization.emptyNode', '未找到匹配节点')"
+                  :select-current-text="tr('pages.system.internationalization.selectCurrent', '选择当前')"
+                  @update:model-value="(v) => field.handleChange(Number(v ?? 0))"
+                />
               </form.Field>
             </div>
 

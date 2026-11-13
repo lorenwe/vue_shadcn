@@ -1,83 +1,217 @@
 <script setup lang="ts">
-/**
- * 动态路由通用页面 — 根据 route.meta.title 展示页面标题
- * 后续可按 route.path 匹配到具体业务组件
- */
-import { useRoute } from 'vue-router'
-import { toast } from 'vue-sonner'
-
-import { Button } from '@/components/ui/button'
-import { fetchLanguagePack } from '@/api/i18n/i18n'
-import { LoginExpiredError } from '@/api/response'
+import { ref } from 'vue'
+import Cascader from '@/components/cascader/cascader.vue'
+import type { CascaderOption } from '@/components/cascader/types'
+import TreeSelect from '@/components/tree-select/tree-select.vue'
+import type { TreeNode } from '@/components/tree-select/types'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 defineOptions({ name: 'Dashboard' })
 
-const route = useRoute()
-const pageTitle = computed(() => (route.meta.title as string) || route.path)
+const parentId = ref<string | number | null>(null)
+const region = ref<string | number | null>(null)
+const hoverRegion = ref<string | number | null>(null)
+const searchRegion = ref<string | number | null>(null)
+const regionPath = ref<CascaderOption[]>([])
+const searchRegionPath = ref<CascaderOption[]>([])
 
-// 接口访问状态测试
-const testing = ref(false)
-const lastResult = ref('')
+const fullTree: TreeNode[] = [
+  {
+    value: '1',
+    label: '技术部',
+    children: [
+      { value: '1-1', label: '前端组', children: [{ value: '1-1-1', label: '基础架构' }] },
+      { value: '1-2', label: '后端组' },
+    ],
+  },
+  {
+    value: '2',
+    label: '产品部',
+    children: [{ value: '2-1', label: '设计组' }],
+  },
+]
 
-async function testApi() {
-  testing.value = true
-  try {
-    const pack = await fetchLanguagePack()
-    const langCount = Object.keys(pack).length
-    lastResult.value = `接口访问正常：语言包接口返回 ${langCount} 种语言`
-    toast.success('接口访问正常', { description: lastResult.value })
-  } catch (error) {
-    // 登录失效已由 parseApiResponse 统一提示并跳转，这里不再重复提示
-    if (error instanceof LoginExpiredError) {
-      return
-    }
-    const message = error instanceof Error ? error.message : String(error)
-    lastResult.value = `接口访问失败：${message}`
-    toast.error('接口访问失败', { description: message })
-  } finally {
-    testing.value = false
-  }
+const regionOptions: CascaderOption[] = [
+  {
+    value: 'zhejiang',
+    label: '浙江省',
+    children: [
+      {
+        value: 'hangzhou',
+        label: '杭州市',
+        children: [
+          { value: 'xihu', label: '西湖区' },
+          { value: 'yuhang', label: '余杭区' },
+        ],
+      },
+      {
+        value: 'ningbo',
+        label: '宁波市',
+        children: [{ value: 'haishu', label: '海曙区' }],
+      },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: '江苏省',
+    children: [
+      {
+        value: 'nanjing',
+        label: '南京市',
+        children: [
+          { value: 'xuanwu', label: '玄武区' },
+          { value: 'jianye', label: '建邺区' },
+        ],
+      },
+      {
+        value: 'suzhou',
+        label: '苏州市',
+        children: [{ value: 'gusu', label: '姑苏区' }],
+      },
+    ],
+  },
+  {
+    value: 'guangdong',
+    label: '广东省',
+    children: [
+      {
+        value: 'guangzhou',
+        label: '广州市',
+        children: [{ value: 'tianhe', label: '天河区' }],
+      },
+    ],
+  },
+]
+
+function onRegionChange(_value: string | number | null, path: CascaderOption[]) {
+  regionPath.value = path
+}
+
+function onSearchRegionChange(_value: string | number | null, path: CascaderOption[]) {
+  searchRegionPath.value = path
 }
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <!-- 页面标题 -->
+  <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight">{{ pageTitle }}</h1>
-      <p class="text-sm text-muted-foreground mt-1">
-        当前路径：{{ route.path }}
+      <h1 class="text-2xl font-semibold tracking-tight">
+        组件用例
+      </h1>
+      <p class="mt-1 text-sm text-muted-foreground">
+        TreeSelect 树形选择 / Cascader 级联选择
       </p>
     </div>
 
-    <!-- 接口访问状态测试 -->
-    <div class="flex flex-wrap items-center gap-3">
-      <Button :disabled="testing" @click="testApi">
-        <UiSpinner v-if="testing" class="mr-2 h-4 w-4 animate-spin" />
-        {{ testing ? '测试中…' : '测试接口访问' }}
-      </Button>
-      <p v-if="lastResult" class="text-sm text-muted-foreground">{{ lastResult }}</p>
+    <div class="grid gap-6 lg:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle>TreeSelect</CardTitle>
+          <CardDescription>
+            单选树形下拉，支持搜索、选中路径回显和清除。
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-3">
+          <TreeSelect
+            v-model="parentId"
+            :data="fullTree"
+            placeholder="选择所属父级部门..."
+            clearable
+          />
+          <p class="text-sm text-muted-foreground">
+            选中值：
+            <span class="font-mono text-foreground">{{ parentId ?? '-' }}</span>
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Cascader</CardTitle>
+          <CardDescription>
+            点击父级展开右侧列，点击叶子选中；首列保持窄宽度，逐级展开。
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-3">
+          <Cascader
+            v-model="region"
+            :options="regionOptions"
+            placeholder="请选择地区"
+            @change="onRegionChange"
+          />
+          <div class="space-y-1 text-sm text-muted-foreground">
+            <p>
+              选中值：
+              <span class="font-mono text-foreground">{{ region ?? '-' }}</span>
+            </p>
+            <p>
+              完整路径：
+              <span class="text-foreground">
+                {{ regionPath.map(item => item.label).join(' / ') || '-' }}
+              </span>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
 
-    <!-- 占位内容 -->
-    <div class="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-      <div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-muted">
-        <svg
-          class="size-6"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-          />
-        </svg>
-      </div>
-      <p class="font-medium">{{ pageTitle }} 页面</p>
-      <p class="text-sm mt-1">此页面由服务端菜单动态生成，可替换为具体业务组件</p>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Cascader 搜索</CardTitle>
+        <CardDescription>
+          展开后在面板顶部输入关键字，按完整路径匹配；适合层级较深、选项较多的数据。
+        </CardDescription>
+      </CardHeader>
+      <CardContent class="space-y-3">
+        <Cascader
+          v-model="searchRegion"
+          :options="regionOptions"
+          placeholder="输入关键字搜索地区"
+          searchable
+          @change="onSearchRegionChange"
+        />
+        <div class="space-y-1 text-sm text-muted-foreground">
+          <p>
+            选中值：
+            <span class="font-mono text-foreground">{{ searchRegion ?? '-' }}</span>
+          </p>
+          <p>
+            完整路径：
+            <span class="text-foreground">
+              {{ searchRegionPath.map(item => item.label).join(' / ') || '-' }}
+            </span>
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader>
+        <CardTitle>Cascader：悬停展开 + 允许选择任意层级</CardTitle>
+        <CardDescription>
+          `expand-trigger="hover"` + `change-on-select`：悬停展开下一列，父级也可直接选中。
+        </CardDescription>
+      </CardHeader>
+      <CardContent class="space-y-3">
+        <Cascader
+          v-model="hoverRegion"
+          :options="regionOptions"
+          placeholder="悬停展开并选择任意层级"
+          expand-trigger="hover"
+          change-on-select
+          clearable
+        />
+        <p class="text-sm text-muted-foreground">
+          选中值：
+          <span class="font-mono text-foreground">{{ hoverRegion ?? '-' }}</span>
+        </p>
+      </CardContent>
+    </Card>
   </div>
 </template>

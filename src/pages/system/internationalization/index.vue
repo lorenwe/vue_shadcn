@@ -34,7 +34,7 @@ import {
   countNodes,
   filterLanguageNodes,
   toLanguageNodes,
-  toParentOptions,
+  toParentTree,
   type LanguageNode,
 } from './data'
 import { usePageText } from './use-page-text'
@@ -53,7 +53,7 @@ const keyword = ref('')
 
 const formOpen = ref(false)
 const editingNode = ref<LanguageNode | null>(null)
-const parentOptions = computed(() => toParentOptions(items.value))
+const parentTree = computed(() => toParentTree(items.value))
 
 const deleteOpen = ref(false)
 const deleteTarget = ref<LanguageNode | null>(null)
@@ -417,7 +417,7 @@ const table = useVueTable({
     <LanguageFormSheet
       v-model:open="formOpen"
       :node="editingNode"
-      :parent-options="parentOptions"
+      :parent-tree="parentTree"
       @submitted="onSubmitted"
     />
 
