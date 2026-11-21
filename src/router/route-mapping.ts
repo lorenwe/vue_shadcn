@@ -76,5 +76,11 @@ export const routeMap: RouteMapping[] = [
     path: '/system/internationalization',
     component: () => import('@/pages/system/internationalization/index.vue'),
     meta: { title: '多语言管理', cacheName: 'Internationalization' }
+  },
+  // ===== 系统设置-接口管理 =====
+  {
+    path: '/system/api-management',
+    component: () => import('@/pages/system/api-management/index.vue'),
+    meta: { title: '接口管理', cacheName: 'ApiManagement' }
   }
 ]
