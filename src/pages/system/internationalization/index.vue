@@ -187,31 +187,6 @@ const columns = computed(() => {
   void locale.value
 
   return [
-    columnHelper.display({
-      id: 'expander',
-      header: () => null,
-      size: 40,
-      minSize: 40,
-      maxSize: 40,
-      enableResizing: false,
-      cell: ({ row }) => {
-        if (!row.getCanExpand()) {
-          return h('span', { class: 'block w-6' })
-        }
-        return h(
-          'span',
-          {
-            class: 'flex size-6 items-center justify-center',
-            'aria-hidden': 'true',
-          },
-          [
-            h(ChevronRightIcon, {
-              class: `size-3.5 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
-            }),
-          ],
-        )
-      },
-    }),
     columnHelper.accessor('name', {
       header: () => t('pages.system.internationalization.name'),
       size: 260,
@@ -226,12 +201,17 @@ const columns = computed(() => {
         return h(
           'div',
           {
-            class: 'flex min-w-0 items-center gap-2',
+            class: 'flex min-w-0 items-center gap-1.5',
             style: { paddingLeft: `${row.depth * 1.25}rem` },
           },
           [
+            canExpand
+              ? h(ChevronRightIcon, {
+                  class: `size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
+                })
+              : h('span', { class: 'size-3.5 shrink-0' }),
             h(icon, {
-              class: `size-4 shrink-0 ${canExpand ? 'text-amber-500' : 'text-muted-foreground'}`,
+              class: `size-4 shrink-0 ${canExpand ? 'text-primary' : 'text-muted-foreground'}`,
             }),
             h('span', { class: 'truncate font-mono text-xs', title: node.name }, node.name),
           ],

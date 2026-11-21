@@ -126,31 +126,6 @@ const columns = computed(() => {
   void locale.value
 
   return [
-    columnHelper.display({
-      id: 'expander',
-      header: () => null,
-      size: 40,
-      minSize: 40,
-      maxSize: 40,
-      enableResizing: false,
-      cell: ({ row }) => {
-        if (!row.getCanExpand()) {
-          return h('span', { class: 'block w-6' })
-        }
-        return h(
-          'span',
-          {
-            class: 'flex size-6 items-center justify-center',
-            'aria-hidden': 'true',
-          },
-          [
-            h(ChevronRightIcon, {
-              class: `size-3.5 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
-            }),
-          ],
-        )
-      },
-    }),
     columnHelper.accessor('api_name', {
       header: () => t('pages.system.api-management.api_name'),
       size: 260,
@@ -162,15 +137,22 @@ const columns = computed(() => {
         const icon = canExpand
           ? (row.getIsExpanded() ? FolderOpenIcon : FolderIcon)
           : FileIcon
+
         return h(
           'div',
           {
-            class: 'flex min-w-0 items-center gap-2',
+            class: 'flex min-w-0 items-center gap-1.5',
             style: { paddingLeft: `${row.depth * 1.25}rem` },
           },
           [
+            // 展开图标放在行图标前面，并跟随层级缩进
+            canExpand
+              ? h(ChevronRightIcon, {
+                  class: `size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
+                })
+              : h('span', { class: 'size-3.5 shrink-0' }),
             h(icon, {
-              class: `size-4 shrink-0 ${canExpand ? 'text-amber-500' : 'text-muted-foreground'}`,
+              class: `size-4 shrink-0 ${canExpand ? 'text-primary' : 'text-muted-foreground'}`,
             }),
             h('span', { class: 'truncate font-mono text-xs', title: node.api_name }, node.api_name),
           ],

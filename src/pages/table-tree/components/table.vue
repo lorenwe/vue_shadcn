@@ -25,6 +25,19 @@ function getRowClasses(row: Row<T>): string {
   )
 }
 
+function getRowClass(row: Row<T>): string {
+  return cn(
+    getRowClasses(row),
+    row.getCanExpand() && 'cursor-pointer hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+  )
+}
+
+/** 点击整行展开 / 收起；叶子节点无操作 */
+function toggleRow(row: Row<T>) {
+  if (!row.getCanExpand()) return
+  row.toggleExpanded()
+}
+
 /**
  * 取列宽：size = 9999 表示"贪婪撑满"，不设死宽度；
  * 其余列按实际 size 返回 px 值。
@@ -72,7 +85,11 @@ function getColStyle(header: Header<T, unknown>) {
             v-for="row in table.getRowModel().rows"
             :key="row.id"
             :data-state="row.getIsSelected() && 'selected'"
-            :class="getRowClasses(row)"
+            :tabindex="row.getCanExpand() ? 0 : undefined"
+            :class="getRowClass(row)"
+            @click="toggleRow(row)"
+            @keydown.enter="toggleRow(row)"
+            @keydown.space.prevent="toggleRow(row)"
           >
             <TableCell
               v-for="cell in row.getVisibleCells()"

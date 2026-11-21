@@ -92,32 +92,6 @@ function collectParentIds(nodes: MenuNode[]): string[] {
 const columnHelper = createColumnHelper<MenuNode>()
 
 const columns = [
-  columnHelper.display({
-    id: 'expander',
-    header: () => null,
-    size: 40,
-    minSize: 40,
-    maxSize: 40,
-    enableResizing: false,
-    cell: ({ row }) => {
-      const canExpand = row.getCanExpand()
-      return h('div', { class: 'flex items-center' }, [
-        canExpand
-          ? h(Button, {
-              variant: 'ghost',
-              size: 'icon',
-              class: 'size-7',
-              onClick: row.getToggleExpandedHandler(),
-            }, 
-            () => [
-              h(ChevronRightIcon, {
-                class: `size-4 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
-              }),
-            ])
-          : h('span', { class: 'w-7' }),
-      ])
-    },
-  }),
   columnHelper.accessor('title', {
     header: () => t('pages.system.menu-management.name'),
     size: 280,
@@ -130,11 +104,16 @@ const columns = [
       const typeIcon = canExpand
         ? (isExpanded ? FolderOpenIcon : FolderIcon)
         : FileIcon
-      const typeIconClass = canExpand ? 'text-amber-500' : 'text-gray-400'
+      const typeIconClass = canExpand ? 'text-primary' : 'text-muted-foreground'
       return h('div', {
-        class: 'flex items-center gap-2 min-w-0',
+        class: 'flex items-center gap-1.5 min-w-0',
         style: { paddingLeft: `${depth * 1.5}rem` },
       }, [
+        canExpand
+          ? h(ChevronRightIcon, {
+              class: `size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`,
+            })
+          : h('span', { class: 'size-3.5 shrink-0' }),
         h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` }),
         h('span', { class: canExpand ? 'font-semibold truncate' : 'font-normal truncate', }, row.getValue('title')),
       ])
@@ -167,7 +146,11 @@ const columns = [
           variant: 'ghost',
           size: 'sm',
           class: 'h-8 text-xs',
-          onClick: () => openEdit(row.original.id),
+          onClick: (event: MouseEvent) => {
+            event.stopPropagation()
+            openEdit(row.original.id)
+          },
+          onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
         }, () => '编辑'),
         canExpand
           ? null
@@ -175,6 +158,8 @@ const columns = [
               variant: 'ghost',
               size: 'sm',
               class: 'h-8 text-xs text-destructive hover:text-destructive',
+              onClick: (event: MouseEvent) => event.stopPropagation(),
+              onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
             }, () => '删除'),
       ])
     },

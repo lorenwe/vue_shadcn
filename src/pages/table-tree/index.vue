@@ -46,31 +46,6 @@ function collectParentIds(nodes: MenuNode[]): string[] {
 const columnHelper = createColumnHelper<MenuNode>()
 
 const columns = [
-  columnHelper.display({
-    id: 'expander',
-    header: () => null,
-    size: 40,
-    minSize: 40,
-    maxSize: 40,
-    enableResizing: false,
-    cell: ({ row }) => {
-      const canExpand = row.getCanExpand()
-      return h('div', { class: 'flex items-center' }, [
-        canExpand
-          ? h(Button, {
-              variant: 'ghost',
-              size: 'icon',
-              class: 'size-7',
-              onClick: row.getToggleExpandedHandler(),
-            }, [
-              h(ChevronRightIcon, {
-                class: `size-4 transition-transform duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`,
-              }),
-            ])
-          : h('span', { class: 'w-7' }),
-      ])
-    },
-  }),
   columnHelper.accessor('title', {
     header: '菜单名称',
     size: 280,
@@ -81,15 +56,20 @@ const columns = [
       const isExpanded = row.getIsExpanded()
       const depth = row.depth
       let typeIcon = FileIcon
-      let typeIconClass = 'text-gray-400'
+      let typeIconClass = 'text-muted-foreground'
       if (canExpand) {
         typeIcon = isExpanded ? FolderOpenIcon : FolderIcon
-        typeIconClass = 'text-amber-500'
+        typeIconClass = 'text-primary'
       }
       return h('div', {
-        class: 'flex items-center gap-2 min-w-0',
+        class: 'flex items-center gap-1.5 min-w-0',
         style: { paddingLeft: `${depth * 1.5}rem` },
       }, [
+        canExpand
+          ? h(ChevronRightIcon, {
+              class: `size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`,
+            })
+          : h('span', { class: 'size-3.5 shrink-0' }),
         canExpand
           ? h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` })
           : row.original.icon || h(typeIcon, { class: `size-4 shrink-0 ${typeIconClass}` }),
@@ -126,6 +106,8 @@ const columns = [
           variant: 'ghost',
           size: 'sm',
           class: 'h-8 text-xs',
+          onClick: (event: MouseEvent) => event.stopPropagation(),
+          onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
         }, '编辑'),
         canExpand
           ? null
@@ -133,6 +115,8 @@ const columns = [
               variant: 'ghost',
               size: 'sm',
               class: 'h-8 text-xs text-destructive hover:text-destructive',
+              onClick: (event: MouseEvent) => event.stopPropagation(),
+              onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
             }, '删除'),
       ])
     },
