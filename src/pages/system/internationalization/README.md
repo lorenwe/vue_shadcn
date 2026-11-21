@@ -24,8 +24,8 @@ src/pages/system/internationalization/
 - 响应外层：`{ code, message, data }`，`code === 200` 为成功
 - `data`：树形词条数组，字段包括
   `id`、`parent_id`、`name`、`sort`、`zhCN`、`enUS`、`jaJP`、`zhTW`、`children`
-- API 封装：`src/api/i18n/i18n.ts` 的 `fetchLanguageListApi`
-- 响应校验：`src/api/i18n/types.ts` 的 `LanguageListResponseSchema`
+- API 封装：`src/api/system/internationalization/i18n.ts` 的 `fetchLanguageListApi`
+- 响应校验：`src/api/system/internationalization/types.ts` 的 `LanguageListResponseSchema`
 
 ### 新增 / 编辑 / 删除
 

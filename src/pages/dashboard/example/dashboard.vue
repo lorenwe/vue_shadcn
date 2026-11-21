@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
 
 import { Button } from '@/components/ui/button'
-import { fetchLanguagePack } from '@/api/i18n/i18n'
+import { fetchLanguagePack } from '@/api/global/i18n'
 import { LoginExpiredError } from '@/api/response'
 
 defineOptions({ name: 'Dashboard' })

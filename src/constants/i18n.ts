@@ -1,4 +1,4 @@
-import type { Language } from '@/api/i18n/types';
+import type { Language } from '@/api/global/types';
 
 export const SUPPORTED_LOCALES: { code: Language; label: string }[] = [
   { code: 'zh-CN', label: '简体中文' },

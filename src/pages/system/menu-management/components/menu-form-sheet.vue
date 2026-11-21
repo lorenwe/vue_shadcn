@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { MenuListItem } from '@/api/menu/types'
+import type { MenuListItem } from '@/api/system/menu-management/types'
 import type { FocusOutsideEvent, PointerDownOutsideEvent } from 'reka-ui'
 import IconPicker from '@/components/icon-picker.vue'
 

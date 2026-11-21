@@ -3,7 +3,7 @@ import { AudioWaveformIcon, CommandIcon, GalleryVerticalEndIcon } from '@lucide/
 import pinia from '@/plugins/pinia/setup'
 import { useMenuStore } from '@/stores/menu'
 import { resolveIcon } from '@/utils/resolve-icon'
-import type { MenuItem2 as ApiMenuItem } from '@/api/menu/types'
+import type { MenuItem2 as ApiMenuItem } from '@/api/global/types'
 
 import type { MenuItem, NavIcon, Team } from '../types'
 

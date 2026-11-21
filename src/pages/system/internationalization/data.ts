@@ -1,4 +1,4 @@
-import type { LanguageListItem } from '@/api/i18n/types'
+import type { LanguageListItem } from '@/api/system/internationalization/types'
 import type { CascaderOption } from '@/components/cascader/types'
 
 /** 页面展示用的多语言词条节点 */

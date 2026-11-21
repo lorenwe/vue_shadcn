@@ -1,7 +1,7 @@
 import { useApiFetch } from '@/composables/use-fetch'
 import { parseApiResponse } from '@/api/response'
-import { LanguageListResponseSchema, LanguagePackSchema } from './types'
-import type { LanguageListResponse, LanguagePack, LanguageSavePayload } from './types'
+import { LanguageListResponseSchema } from './types'
+import type { LanguageListResponse, LanguageSavePayload } from './types'
 
 /** 语言词条写接口（后端 SysLanguage 控制器） */
 const LANGUAGE_WRITE_API = {
@@ -9,18 +9,6 @@ const LANGUAGE_WRITE_API = {
   update: '/language/edit',
   remove: '/language/del',
 } as const
-
-/**
- * 从服务端获取完整语言包（所有语言一次性返回）
- */
-export async function fetchLanguagePack(): Promise<LanguagePack> {
-  const { apiFetch } = useApiFetch()
-  const res = await apiFetch('/language/allLocales', {
-    method: 'POST',
-  })
-
-  return parseApiResponse(res, LanguagePackSchema, { errorMessage: '获取语言包失败' })
-}
 
 /**
  * 获取多语言词条列表（/language/list）

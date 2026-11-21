@@ -1,5 +1,5 @@
-import type { MenuListItem } from '@/api/menu/types'
-import type { Language } from '@/api/i18n/types'
+import type { MenuListItem } from '@/api/system/menu-management/types'
+import type { Language } from '@/api/global/types'
 import { DEFAULT_LOCALE } from '@/constants/i18n'
 
 /**

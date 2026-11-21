@@ -45,8 +45,10 @@ pnpm preview    # 预览 dist
 - **`/language/list` 是管理页数据**（树形记录），只用于
   `src/pages/system/internationalization/` 的展示与增删改查；
   不要用它拼 UI 文案 key。
-- 类型契约：`src/api/i18n/types.ts`（`LanguagePackSchema`、
-  `LanguageListResponseSchema`）。
+- 类型契约：
+  - 语言包：`src/api/global/types.ts`（`LanguagePackSchema`）；
+  - 管理列表：`src/api/system/internationalization/types.ts`
+    （`LanguageListResponseSchema`）。
 - 快照刷新脚本：
   - `scripts/fetch-language-pack.mjs`：从 `/language/allLocales` 抓取（权威）；
   - `scripts/build-language-pack-from-list.mjs`：后端不可用时从

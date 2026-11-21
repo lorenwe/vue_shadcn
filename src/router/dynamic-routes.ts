@@ -1,7 +1,7 @@
 // router/dynamic-routes.ts
 import type { Router, RouteRecordRaw } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
-import type { MenuItem2 } from '@/api/menu/types'
+import type { MenuItem2 } from '@/api/global/types'
 import { routeMap, type RouteMapping } from './route-mapping'
 
 // ===== 2. 构建快速查找索引 =====

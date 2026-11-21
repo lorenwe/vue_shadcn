@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Language } from '@/api/i18n/types'
+import type { Language } from '@/api/global/types'
 import type { AcceptableValue } from 'reka-ui'
 import { useI18n } from 'vue-i18n'
 import { LanguagesIcon } from '@lucide/vue'

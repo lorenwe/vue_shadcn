@@ -14,8 +14,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { createLanguageApi, updateLanguageApi } from '@/api/i18n/i18n'
-import type { LanguageSavePayload } from '@/api/i18n/types'
+import { createLanguageApi, updateLanguageApi } from '@/api/system/internationalization/i18n'
+import type { LanguageSavePayload } from '@/api/system/internationalization/types'
 import Cascader from '@/components/cascader/cascader.vue'
 import type { CascaderOption } from '@/components/cascader/types'
 import { usePageText } from '../use-page-text'

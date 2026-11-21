@@ -21,9 +21,9 @@ import {
 import DataTable from './components/table.vue'
 import MenuFormSheet from './components/menu-form-sheet.vue'
 import { toMenuNodes, findMenuItemById, type MenuNode } from './data'
-import { fetchMenuListApi } from '@/api/menu/menu'
-import type { MenuListItem } from '@/api/menu/types'
-import type { Language } from '@/api/i18n/types'
+import { fetchMenuListApi } from '@/api/system/menu-management/menu'
+import type { MenuListItem } from '@/api/system/menu-management/types'
+import type { Language } from '@/api/global/types'
 
 defineOptions({ name: 'MenuManagement' })
 

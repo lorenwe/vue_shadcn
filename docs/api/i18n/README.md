@@ -51,7 +51,7 @@ import 进 `src/` 业务代码，否则会把整份语言数据打进前端产�
   的 `fallbackLocale` 兜底。
 - 运行时加载链路：
   `src/plugins/i18n/setup.ts` → `fetchLanguagePack()`
-  （`src/api/i18n/i18n.ts`）→ `useI18nLoader().loadLocaleMessages()`
+  （`src/api/global/i18n.ts`）→ `useI18nLoader().loadLocaleMessages()`
   → 与 `src/plugins/i18n/lang/*.json` 内置包 `deepMerge` 后
   `i18n.global.setLocaleMessage()`。
 - `allLocales` 主要覆盖后端管理的业务词条（`pages.*`、`menu.*`、`global.*`、
@@ -61,7 +61,7 @@ import 进 `src/` 业务代码，否则会把整份语言数据打进前端产�
   `pages.system.internationalization.pageTitle`、`searchPlaceholder`）也应维护在
   后端语言表中，登录后由 `allLocales` 下发；不要写进内置静态文件。
   接口暂缺该键时，页面用默认文案兜底。
-- 类型契约：`src/api/i18n/types.ts` 的 `LanguagePackSchema`。
+- 类型契约：`src/api/global/types.ts` 的 `LanguagePackSchema`。
 
 **Agent 用法**：把 `language-pack.full.json` 当作翻译字典。写页面前先查
 所需 key 是否已存在；存在就复用，不存在再按命名空间新增。
@@ -73,7 +73,7 @@ import 进 `src/` 业务代码，否则会把整份语言数据打进前端产�
 - 与运行时语言包是**同一份数据的不同视图**：`allLocales` 是扁平 key，`list`
   是管理树；不要用 `list` 的节点自己拼接 UI 文案 key。
 - 页面与请求：`src/pages/system/internationalization/`、
-  `src/api/i18n/i18n.ts` 的 `fetchLanguageListApi()`。
+  `src/api/system/internationalization/i18n.ts` 的 `fetchLanguageListApi()`。
 
 ## 当前快照来源
 

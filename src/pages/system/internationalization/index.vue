@@ -38,7 +38,7 @@ import {
   type LanguageNode,
 } from './data'
 import { usePageText } from './use-page-text'
-import { deleteLanguageApi, fetchLanguageListApi } from '@/api/i18n/i18n'
+import { deleteLanguageApi, fetchLanguageListApi } from '@/api/system/internationalization/i18n'
 import { getI18nInstance } from '@/plugins/i18n/setup'
 import { useI18nLoader } from '@/composables/use-i18n-loader'
 
