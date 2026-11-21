@@ -134,7 +134,11 @@ watch(
 
 <template>
   <Sheet :open="open" @update:open="(v: boolean) => emit('update:open', v)">
-    <SheetContent side="right" class="sm:max-w-lg">
+    <SheetContent 
+      side="right" 
+      class="sm:max-w-lg"
+      @interact-outside="(event: Event) => event.preventDefault()"
+    >
       <form
         class="flex h-full flex-col"
         @submit.prevent="form.handleSubmit()"

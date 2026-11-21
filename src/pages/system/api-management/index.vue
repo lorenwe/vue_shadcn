@@ -192,7 +192,8 @@ const columns = computed(() => {
       cell: ({ row }) => {
         const node = row.original
         const canExpand = row.getCanExpand()
-        const icon = canExpand
+        const isDir = node.api_type === 'dir'
+        const icon = isDir
           ? (row.getIsExpanded() ? FolderOpenIcon : FolderIcon)
           : FileIcon
 
@@ -210,7 +211,7 @@ const columns = computed(() => {
                 })
               : h('span', { class: 'size-3.5 shrink-0' }),
             h(icon, {
-              class: `size-4 shrink-0 ${canExpand ? 'text-primary' : 'text-muted-foreground'}`,
+              class: `size-4 shrink-0 ${isDir ? 'text-primary' : 'text-muted-foreground'}`,
             }),
             h('span', { class: 'truncate font-mono text-xs', title: node.api_name }, node.api_name),
           ],
