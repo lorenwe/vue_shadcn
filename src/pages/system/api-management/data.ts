@@ -17,13 +17,22 @@ export interface AdminApiNode {
   children?: AdminApiNode[]
 }
 
-/** 后端树 → Cascader 父级选项（label 使用国际化字段名 name） */
-export function toParentTree(nodes: AdminApiNode[]): CascaderOption[] {
-  return nodes.map(node => ({
-    value: Number(node.id),
-    label: node.api_name,
-    children: node.children?.length ? toParentTree(node.children) : undefined,
-  }))
+/**
+ * 后端树 → Cascader 父级选项。
+ * 只保留 dir 节点：api 类型不能作为父级，直接在数据层过滤，避免改动 Cascader 组件。
+ * 编辑时排除当前节点及其子树，避免选到自己。
+ */
+export function toParentTree(nodes: AdminApiNode[], excludeId?: string): CascaderOption[] {
+  return nodes
+    .filter(node => node.id !== excludeId && node.api_type !== 'api')
+    .map((node) => {
+      const children = node.children?.length ? toParentTree(node.children, excludeId) : []
+      return {
+        value: Number(node.id),
+        label: node.api_name,
+        children: children.length > 0 ? children : undefined,
+      }
+    })
 }
 
 /** 后端树 → 展示节点：兄弟节点按 sort、id 升序 */

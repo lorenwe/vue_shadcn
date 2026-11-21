@@ -12,21 +12,36 @@ import {
   FileIcon,
   FolderIcon,
   FolderOpenIcon,
+  PlusIcon,
   RefreshCwIcon,
 } from '@lucide/vue'
+import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import DataTable from './components/table.vue'
+import AdminApiFormSheet from './components/form-sheet.vue'
 import {
   collectParentIds,
   countLeaves,
   countNodes,
   filterAdminApiNodes,
   toAdminApiNodes,
+  toParentTree,
   type AdminApiNode,
 } from './data'
 import { usePageText } from './use-page-text.ts'
-import { fetchAdminApiListApi } from '@/api/system/api-management/admin-api.ts'
+import {
+  deleteAdminApiApi,
+  fetchAdminApiListApi,
+} from '@/api/system/api-management/admin-api.ts'
 
 defineOptions({ name: 'ApiManagement' })
 
@@ -36,6 +51,14 @@ const items = ref<AdminApiNode[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 const keyword = ref('')
+
+const formOpen = ref(false)
+const editingNode = ref<AdminApiNode | null>(null)
+const parentTree = computed(() => toParentTree(items.value, editingNode.value?.id))
+
+const deleteOpen = ref(false)
+const deleteTarget = ref<AdminApiNode | null>(null)
+const deleting = ref(false)
 
 async function loadList() {
   isLoading.value = true
@@ -47,6 +70,41 @@ async function loadList() {
     error.value = e instanceof Error ? e.message : String(e)
   } finally {
     isLoading.value = false
+  }
+}
+
+function openCreate() {
+  editingNode.value = null
+  formOpen.value = true
+}
+
+function openEdit(node: AdminApiNode) {
+  editingNode.value = node
+  formOpen.value = true
+}
+
+function onSubmitted() {
+  loadList()
+}
+
+function askDelete(node: AdminApiNode) {
+  deleteTarget.value = node
+  deleteOpen.value = true
+}
+
+async function confirmDelete() {
+  if (!deleteTarget.value) return
+  deleting.value = true
+  try {
+    await deleteAdminApiApi(Number(deleteTarget.value.id))
+    toast.success(tr('pages.system.api-management.deleteSuccess', '删除成功'))
+    deleteOpen.value = false
+    deleteTarget.value = null
+    await loadList()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : String(e))
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -216,11 +274,11 @@ const columns = computed(() => {
               class: 'h-8 px-2 text-xs',
               onClick: (event: MouseEvent) => {
                 event.stopPropagation()
-                // openEdit(node)
+                openEdit(node)
               },
               onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
             },
-            () => tr('menu.system.internationalization.edit', '编辑'),
+            () => tr('menu.system.api-management.edit', '编辑'),
           ),
           h(
             Button,
@@ -230,15 +288,15 @@ const columns = computed(() => {
               class: 'h-8 px-2 text-xs text-destructive hover:text-destructive',
               disabled: hasChildren,
               title: hasChildren
-                ? tr('pages.system.internationalization.hasChildren', '请先删除该节点的所有子节点')
+                ? tr('pages.system.api-management.hasChildren', '请先删除该节点的所有子节点')
                 : undefined,
               onClick: (event: MouseEvent) => {
                 event.stopPropagation()
-                // askDelete(node)
+                askDelete(node)
               },
               onKeydown: (event: KeyboardEvent) => event.stopPropagation(),
             },
-            () => tr('menu.system.internationalization.delete', '删除'),
+            () => tr('menu.system.api-management.delete', '删除'),
           ),
         ])
       },
@@ -289,10 +347,10 @@ const table = useVueTable({
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <!-- <Button size="sm" :disabled="isLoading" @click="openCreate">
+        <Button size="sm" :disabled="isLoading" @click="openCreate">
           <PlusIcon class="size-4" />
           <span class="ml-1">{{ tr('menu.system.api-management.add', '新增') }}</span>
-        </Button> -->
+        </Button>
         <Input
           v-model="keyword"
           :placeholder="tr('pages.system.api-management.searchPlaceholder', t('global.form.placeholder'))"
@@ -339,23 +397,23 @@ const table = useVueTable({
       :empty-text="tr('pages.system.api-management.empty', '—')"
     />
 
-    <!-- <LanguageFormSheet
+    <AdminApiFormSheet
       v-model:open="formOpen"
       :node="editingNode"
       :parent-tree="parentTree"
       @submitted="onSubmitted"
-    /> -->
+    />
 
-    <!-- <Dialog :open="deleteOpen" @update:open="(v: boolean) => deleteOpen = v">
+    <Dialog :open="deleteOpen" @update:open="(v: boolean) => deleteOpen = v">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {{ tr('pages.system.api-management.deleteTitle', '删除词条') }}
+            {{ tr('pages.system.api-management.deleteTitle', '删除接口') }}
           </DialogTitle>
           <DialogDescription>
-            {{ tr('pages.system.api-management.deleteDescription', '删除后不可恢复，确定删除该词条吗？') }}
+            {{ tr('pages.system.api-management.deleteDescription', '删除后不可恢复，确定删除该接口吗？') }}
             <span v-if="deleteTarget" class="mt-1 block font-mono text-xs text-foreground">
-              {{ deleteTarget.name }}
+              {{ deleteTarget.api_name }}
             </span>
           </DialogDescription>
         </DialogHeader>
@@ -370,6 +428,6 @@ const table = useVueTable({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog> -->
+    </Dialog>
   </div>
 </template>
