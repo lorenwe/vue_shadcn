@@ -5,6 +5,7 @@ import {
   type UserListQuery,
   type UserListResponse,
   type UserSavePayload,
+  type UserSortPayload,
 } from './types'
 
 /** 用户列表（/admin/user/list） */
@@ -49,4 +50,15 @@ export async function deleteUserApi(id: number): Promise<void> {
   })
 
   parseApiResponse(res, undefined, { errorMessage: '删除用户失败' })
+}
+
+/** 修改当前行排序（/admin/user/sort） */
+export async function updateUserSortApi(payload: UserSortPayload): Promise<void> {
+  const { apiFetch } = useApiFetch()
+  const res = await apiFetch('/admin/user/sort', {
+    method: 'POST',
+    body: payload,
+  })
+
+  parseApiResponse(res, undefined, { errorMessage: '修改排序失败' })
 }

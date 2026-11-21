@@ -39,6 +39,12 @@ export interface UserListQuery {
   remark?: string
 }
 
+/** 修改排序（/admin/user/sort） */
+export interface UserSortPayload {
+  id: number
+  sort: number
+}
+
 /** 新增 / 编辑用户的提交数据（JSON snake_case） */
 export interface UserSavePayload {
   id?: number

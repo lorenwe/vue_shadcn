@@ -24,7 +24,13 @@ import {
 } from '@/components/ui/dialog'
 import UserTable from './components/table.vue'
 import UserFormSheet from './components/form-sheet.vue'
-import { deleteUserApi, fetchUsersApi } from '@/api/system/user-management/user-api'
+import SortCell from '@/components/sort-cell/sort-cell.vue'
+import type { SortUpdatePayload } from '@/components/sort-cell/types'
+import {
+  deleteUserApi,
+  fetchUsersApi,
+  updateUserSortApi,
+} from '@/api/system/user-management/user-api'
 import type { UserItem } from '@/api/system/user-management/types'
 import { usePageText } from './use-page-text'
 
@@ -126,6 +132,10 @@ function formatTime(value: number | null | undefined): string {
   return date.toLocaleString()
 }
 
+function onSortUpdated() {
+  loadUsers()
+}
+
 const columnHelper = createColumnHelper<UserItem>()
 
 const columns = computed(() => {
@@ -160,14 +170,18 @@ const columns = computed(() => {
     }),
     columnHelper.accessor('sort', {
       header: () => h('div', { class: 'text-right' }, tr('global.table.sort', '排序')),
-      size: 80,
-      minSize: 64,
-      maxSize: 100,
-      cell: ({ getValue }) => h(
-        'div',
-        { class: 'text-right text-sm tabular-nums text-muted-foreground' },
-        String(getValue()),
-      ),
+      size: 90,
+      minSize: 72,
+      maxSize: 110,
+      cell: ({ row }) => h(SortCell, {
+        id: row.original.id,
+        value: row.original.sort,
+        update: (payload: SortUpdatePayload) => updateUserSortApi({
+          id: Number(payload.id),
+          sort: payload.sort,
+        }),
+        onSaved: onSortUpdated,
+      }),
     }),
     columnHelper.accessor('create_at', {
       header: () => tr('pages.system.user-management.createAt', '创建时间'),

@@ -50,6 +50,7 @@ declare module 'vue' {
     NoResultFound: typeof import('./../components/no-result-found.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SortCell: typeof import('./../components/sort-cell/sort-cell.vue')['default']
     ToggleTheme: typeof import('./../components/toggle-theme.vue')['default']
     TreeNode: typeof import('./../components/tree-node.vue')['default']
     TreeSelect: typeof import('./../components/tree-select/tree-select.vue')['default']
