@@ -52,7 +52,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SortCell: typeof import('./../components/sort-cell/sort-cell.vue')['default']
     ToggleTheme: typeof import('./../components/toggle-theme.vue')['default']
-    TreeNode: typeof import('./../components/tree-node.vue')['default']
+    TreeNode: typeof import('./../components/tree-node/tree-node.vue')['default']
     TreeSelect: typeof import('./../components/tree-select/tree-select.vue')['default']
     TreeSelectTreeNode: typeof import('./../components/tree-select/tree-node.vue')['default']
     UiAvatar: typeof import('./../components/ui/avatar/Avatar.vue')['default']

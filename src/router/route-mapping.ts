@@ -88,5 +88,11 @@ export const routeMap: RouteMapping[] = [
     path: '/system/user-management',
     component: () => import('@/pages/system/user-management/index.vue'),
     meta: { title: '用户管理', cacheName: 'UserManagement' }
+  },
+  // ===== 系统设置-角色管理 =====
+  {
+    path: '/system/role-management',
+    component: () => import('@/pages/system/role-management/index.vue'),
+    meta: { title: '角色管理', cacheName: 'RoleManagement' }
   }
 ]

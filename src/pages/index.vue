@@ -1,39 +1,45 @@
 <script lang="ts" setup>
+import TreeCheckbox from '@/components/tree-node/tree-node.vue'
+
 defineOptions({ name: 'Home' })
 
 const items2 = [
   {
+    id: 'system',
     title: '系统管理',
     icon: 'lucide:settings',
     children: [
-      { title: '用户管理', icon: 'lucide:users' },
-      { title: '角色管理', icon: 'lucide:shield' },
+      { id: 'system-user', title: '用户管理', icon: 'lucide:users' },
+      { id: 'system-role', title: '角色管理', icon: 'lucide:shield' },
       {
+        id: 'system-permission',
         title: '权限管理',
         icon: 'lucide:lock',
         children: [
-          { title: '查看权限', icon: 'lucide:eye' },
-          { title: '编辑权限', icon: 'lucide:pencil' },
-          { title: '删除权限', icon: 'lucide:trash-2' },
+          { id: 'permission-view', title: '查看权限', icon: 'lucide:eye' },
+          { id: 'permission-edit', title: '编辑权限', icon: 'lucide:pencil' },
+          { id: 'permission-delete', title: '删除权限', icon: 'lucide:trash-2' },
         ],
       },
     ],
   },
   {
+    id: 'content',
     title: '内容管理',
     icon: 'lucide:file-text',
     children: [
-      { title: '文章管理', icon: 'lucide:file' },
-      { title: '分类管理', icon: 'lucide:tag' },
-      { title: '标签管理', icon: 'lucide:hash' },
+      { id: 'content-article', title: '文章管理', icon: 'lucide:file' },
+      { id: 'content-category', title: '分类管理', icon: 'lucide:tag' },
+      { id: 'content-tag', title: '标签管理', icon: 'lucide:hash' },
     ],
   },
   {
+    id: 'settings',
     title: '系统设置',
     icon: 'lucide:sliders',
     children: [
-      { title: '基本设置', icon: 'lucide:settings' },
-      { title: '安全设置', icon: 'lucide:shield-check' },
+      { id: 'settings-basic', title: '基本设置', icon: 'lucide:settings' },
+      { id: 'settings-security', title: '安全设置', icon: 'lucide:shield-check' },
     ],
   },
 ]
@@ -41,14 +47,14 @@ const items2 = [
 // 默认选中的权限
 const defaultChecked: string[] = []
 // ✅ 使用 ref 使其响应式
-const checkeds = ref<string[]>([])
+const checkeds = ref<Array<string | number>>([])
 
-function handleCheckedChange(checked: string[]) {
+function handleCheckedChange(checked: Array<string | number>) {
   checkeds.value = checked  // ✅ 通过 .value 赋值
   console.log('选中的权限:', checked)
 }
 
-function handleChange(checked: string[], item: any) {
+function handleChange(checked: Array<string | number>, item: { title: string }) {
   console.log('权限变化:', item.title, checked)
 }
 </script>
@@ -56,7 +62,7 @@ function handleChange(checked: string[], item: any) {
 <template>
     <div class="p-8">
     <h2 class="text-lg font-bold mb-4">权限管理</h2>
-    <TreeNode
+    <TreeCheckbox
       :items="items2"
       :default-checked="defaultChecked"
       @update:checked="handleCheckedChange"
