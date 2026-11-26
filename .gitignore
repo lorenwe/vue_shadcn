@@ -26,3 +26,4 @@ dist-ssr
 # AI/编辑器原子写入的临时文件
 *.tmp
 *.tmpdir/
+.workbuddy/

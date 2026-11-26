@@ -5,6 +5,7 @@ import {
   type RoleListQuery,
   type RoleListResponse,
   type RoleSavePayload,
+  type RoleSortPayload,
 } from './types'
 
 /** 角色列表（/role/list） */
@@ -49,4 +50,15 @@ export async function deleteRoleApi(id: number): Promise<void> {
   })
 
   parseApiResponse(res, undefined, { errorMessage: '删除角色失败' })
+}
+
+/** 修改当前行排序（/role/sort） */
+export async function updateRoleSortApi(payload: RoleSortPayload): Promise<void> {
+  const { apiFetch } = useApiFetch()
+  const res = await apiFetch('/role/sort', {
+    method: 'POST',
+    body: payload,
+  })
+
+  parseApiResponse(res, undefined, { errorMessage: '修改排序失败' })
 }

@@ -25,8 +25,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import RoleFormSheet from './components/form-sheet.vue'
+import SortCell from '@/components/sort-cell/sort-cell.vue'
+import type { SortUpdatePayload } from '@/components/sort-cell/types'
 import type { TreeNode as TreeCheckboxNode } from '@/components/tree-node/types'
-import { deleteRoleApi, fetchRolesApi } from '@/api/system/role-management/role-api'
+import { deleteRoleApi, fetchRolesApi, updateRoleSortApi } from '@/api/system/role-management/role-api'
 import type { RoleItem } from '@/api/system/role-management/types'
 import { fetchMenuListApi } from '@/api/system/menu-management/menu'
 import type { MenuListItem } from '@/api/system/menu-management/types'
@@ -117,6 +119,17 @@ function openEdit(role: RoleItem) {
 }
 
 function onSubmitted() {
+  loadRoles()
+}
+
+function updateRoleSort(payload: SortUpdatePayload) {
+  return updateRoleSortApi({
+    id: Number(payload.id),
+    sort: payload.sort,
+  })
+}
+
+function onSortUpdated() {
   loadRoles()
 }
 
@@ -239,8 +252,13 @@ async function confirmDelete() {
                     : tr('global.status.enabled', '启用') }}
                 </span>
               </TableCell>
-              <TableCell class="text-right text-sm tabular-nums text-muted-foreground">
-                {{ role.sort }}
+              <TableCell class="w-20 text-right">
+                <SortCell
+                  :id="role.id"
+                  :value="role.sort"
+                  :update="updateRoleSort"
+                  @saved="onSortUpdated"
+                />
               </TableCell>
               <TableCell>
                 <span :class="role.remark ? 'text-sm' : 'text-sm text-muted-foreground'">

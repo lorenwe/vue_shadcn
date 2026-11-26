@@ -37,6 +37,12 @@ export interface RoleListQuery {
   status?: number
 }
 
+/** 修改排序（/role/sort） */
+export interface RoleSortPayload {
+  id: number
+  sort: number
+}
+
 /** 新增 / 编辑角色的提交数据（JSON snake_case） */
 export interface RoleSavePayload {
   id?: number
